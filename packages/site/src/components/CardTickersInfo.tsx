@@ -1,17 +1,14 @@
-import type { ReactNode } from 'react';
 import styled from 'styled-components';
 
-type CardProps = {
+type CardTickersInfoProps = {
   content: {
     title?: string;
-    description?: ReactNode;
-    button?: ReactNode;
   };
   disabled?: boolean;
   fullWidth?: boolean;
 };
 
-const CardWrapper = styled.div<{
+const CardTickersInfoWrapep = styled.div<{
   fullWidth?: boolean | undefined;
   disabled?: boolean | undefined;
 }>`
@@ -36,24 +33,21 @@ const CardWrapper = styled.div<{
 
 const Title = styled.h2`
   font-size: ${({ theme }) => theme.fontSizes.large};
-  margin: 0;
+  margin: 0 0 1rem 0;
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
 `;
 
-const Description = styled.div`
-  margin-top: 2.4rem;
-  margin-bottom: 2.4rem;
-`;
-
-export const Card = ({ content, disabled = false, fullWidth }: CardProps) => {
-  const { title, description, button } = content;
+export const CardTickersInfo = ({
+  content,
+  disabled = false,
+  fullWidth,
+}: CardTickersInfoProps) => {
+  const { title } = content;
   return (
-    <CardWrapper fullWidth={fullWidth} disabled={disabled}>
+    <CardTickersInfoWrapep fullWidth={fullWidth} disabled={disabled}>
       {title && <Title>{title}</Title>}
-      <Description>{description}</Description>
-      {button}
-    </CardWrapper>
+    </CardTickersInfoWrapep>
   );
 };

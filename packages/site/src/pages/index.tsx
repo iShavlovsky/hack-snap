@@ -1,4 +1,3 @@
-import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import styled from 'styled-components';
 
 import {
@@ -7,7 +6,13 @@ import {
   ReconnectButton,
   SendHelloButton,
   Card,
+  SendButton,
+  ClearButton,
 } from '../components';
+import { AnalyticsForm } from '../components/AnalyticsForm';
+import { CardTickersInfo } from '../components/CardTickersInfo';
+import { ChartIndicators } from '../components/ChartIndicators';
+import { ChartOrders } from '../components/ChartOrders';
 import { defaultSnapOrigin } from '../config';
 import {
   useMetaMask,
@@ -20,7 +25,6 @@ import { isLocalSnap, shouldDisplayReconnectButton } from '../utils';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   flex: 1;
   margin-top: 7.6rem;
   margin-bottom: 7.6rem;
@@ -31,6 +35,35 @@ const Container = styled.div`
     margin-bottom: 2rem;
     width: auto;
   }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const WrapperChart = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`;
+
+const WrapperRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin-top: 2rem;
+`;
+
+const ContainerRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  flex: 1;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+  gap: 2rem;
+  padding: 0 5rem;
 `;
 
 const Heading = styled.h1`
@@ -48,6 +81,7 @@ const Subtitle = styled.p`
   font-weight: 500;
   margin-top: 0;
   margin-bottom: 0;
+  text-align: center;
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
@@ -55,13 +89,12 @@ const Subtitle = styled.p`
 
 const CardContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-between;
-  max-width: 64.8rem;
+  max-width: 30rem;
   width: 100%;
   height: 100%;
-  margin-top: 1.5rem;
 `;
 
 const Notice = styled.div`
@@ -71,8 +104,6 @@ const Notice = styled.div`
   border-radius: ${({ theme }) => theme.radii.default};
   padding: 2.4rem;
   margin-top: 2.4rem;
-  max-width: 60rem;
-  width: 100%;
 
   & > * {
     margin: 0;
@@ -101,6 +132,37 @@ const ErrorMessage = styled.div`
   }
 `;
 
+// /**
+//  *
+//  */
+// function Chart() {
+//   return null;
+// }
+//
+// /**
+//  *
+//  */
+// function Deposits() {
+//   return null;
+// }
+//
+// /**
+//  *
+//  */
+// function Orders() {
+//   return null;
+// }
+//
+// /**
+//  *
+//  * @param props
+//  * @param props.sx
+//  * @param props.sx.pt
+//  */
+// function Copyright(props: { sx: { pt: number } }) {
+//   return null;
+// }
+
 const Index = () => {
   const { error } = useMetaMaskContext();
   const { isFlask, snapsDetected, installedSnap } = useMetaMask();
@@ -120,94 +182,146 @@ const Index = () => {
 
   return (
     <Container>
-      <FormGroup>
-        <FormControlLabel control={<Checkbox defaultChecked />} label="Label" />
-        <FormControlLabel required control={<Checkbox />} label="Required" />
-        <FormControlLabel disabled control={<Checkbox />} label="Disabled" />
-      </FormGroup>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        Welcome to <Span>WTF Analytics</Span>
       </Heading>
       <Subtitle>
-        Get started by editing <code>src/index.ts</code>
+        Get started by <code>https://whattofarm.io</code>
       </Subtitle>
-      <CardContainer>
-        {error && (
-          <ErrorMessage>
-            <b>An error happened:</b> {error.message}
-          </ErrorMessage>
-        )}
-        {!isMetaMaskReady && (
-          <Card
+      <ContainerRow>
+        <Wrapper>
+          {/* todo: form 1 WhatToFarm*/}
+          <AnalyticsForm
             content={{
-              title: 'Install',
-              description:
-                'Snaps is pre-release software only available in MetaMask Flask, a canary distribution for developers with access to upcoming features.',
-              button: <InstallFlaskButton />,
+              title: 'WhatToFarm',
             }}
-            fullWidth
           />
-        )}
-        {!installedSnap && (
-          <Card
+
+          {/* todo: form 2 WhatToFarm*/}
+          <AnalyticsForm
             content={{
-              title: 'Connect',
-              description:
-                'Get started by connecting to and installing the example snap.',
-              button: (
-                <ConnectButton
-                  onClick={requestSnap}
-                  disabled={!isMetaMaskReady}
-                />
-              ),
+              title: 'DexScreneer',
             }}
-            disabled={!isMetaMaskReady}
           />
-        )}
-        {shouldDisplayReconnectButton(installedSnap) && (
+
+          {/* todo: form 3 WhatToFarm*/}
+          <AnalyticsForm
+            content={{
+              title: 'BirdEye',
+            }}
+          />
+
+          <WrapperRow>
+            <ClearButton
+              onClick={handleSendHelloClick}
+              disabled={!installedSnap}
+            />
+            <SendButton
+              onClick={handleSendHelloClick}
+              disabled={!installedSnap}
+            />
+          </WrapperRow>
+        </Wrapper>
+        <WrapperChart>
+          {/* todo: Chart Indicators*/}
+          <ChartIndicators
+            content={{
+              title: 'ETH/USDC',
+            }}
+          />
+          {/* todo: Chart Orders*/}
+          <ChartOrders
+            content={{
+              title: 'Price Chart',
+            }}
+          />
+        </WrapperChart>
+
+        <CardContainer>
+          {error && (
+            <ErrorMessage>
+              <b>An error happened:</b> {error.message}
+            </ErrorMessage>
+          )}
+          {/* todo: Card Tickers Info*/}
+          <CardTickersInfo
+            content={{
+              title: 'Info about ETH/USDC',
+            }}
+          />
+
+          {!isMetaMaskReady && (
+            <Card
+              content={{
+                title: 'Install',
+                description:
+                  'Snaps is pre-release software only available in MetaMask Flask, a canary distribution for developers with access to upcoming features.',
+                button: <InstallFlaskButton />,
+              }}
+              fullWidth
+            />
+          )}
+          {!installedSnap && (
+            <Card
+              content={{
+                title: 'Connect',
+                description:
+                  'Get started by connecting to and installing the example snap.',
+                button: (
+                  <ConnectButton
+                    onClick={requestSnap}
+                    disabled={!isMetaMaskReady}
+                  />
+                ),
+              }}
+              disabled={!isMetaMaskReady}
+            />
+          )}
+          {shouldDisplayReconnectButton(installedSnap) && (
+            <Card
+              content={{
+                title: 'Reconnect',
+                description:
+                  'While connected to a local running snap this button will always be displayed in order to update the snap if a change is made.',
+                button: (
+                  <ReconnectButton
+                    onClick={requestSnap}
+                    disabled={!installedSnap}
+                  />
+                ),
+              }}
+              disabled={!installedSnap}
+            />
+          )}
           <Card
             content={{
-              title: 'Reconnect',
+              title: 'Send Hello message',
               description:
-                'While connected to a local running snap this button will always be displayed in order to update the snap if a change is made.',
+                'Display a custom message within a confirmation screen in MetaMask.',
               button: (
-                <ReconnectButton
-                  onClick={requestSnap}
+                <SendHelloButton
+                  onClick={handleSendHelloClick}
                   disabled={!installedSnap}
                 />
               ),
             }}
             disabled={!installedSnap}
+            fullWidth={
+              isMetaMaskReady &&
+              Boolean(installedSnap) &&
+              !shouldDisplayReconnectButton(installedSnap)
+            }
           />
-        )}
-        <Card
-          content={{
-            title: 'Send Hello message',
-            description:
-              'Display a custom message within a confirmation screen in MetaMask.',
-            button: (
-              <SendHelloButton
-                onClick={handleSendHelloClick}
-                disabled={!installedSnap}
-              />
-            ),
-          }}
-          disabled={!installedSnap}
-          fullWidth={
-            isMetaMaskReady &&
-            Boolean(installedSnap) &&
-            !shouldDisplayReconnectButton(installedSnap)
-          }
-        />
-        <Notice>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
-        </Notice>
-      </CardContainer>
+          <Notice>
+            <p>
+              Please note that the <b>snap.manifest.json</b> and{' '}
+              <b>package.json</b> must be located in the server root directory
+              and the bundle must be hosted at the location specified by the
+              location field.
+            </p>
+          </Notice>
+        </CardContainer>
+      </ContainerRow>
     </Container>
   );
 };
