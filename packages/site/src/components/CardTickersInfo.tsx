@@ -59,11 +59,11 @@ export const CardTickersInfo = ({
       {title && <Title>{title}</Title>}
       <Description>Token: {analytics.pairInfo.ticker}</Description>
       <Divider />
-      <Description>Liquidity: {analytics.liquidity.toFixed(2)}</Description>
+      <Description>Liquidity: ${analytics.liquidity.toFixed(2)}</Description>
       <Divider />
-      <Description>Market Cap: {analytics.marketCap.toFixed(2)}</Description>
+      <Description>Market Cap: ${analytics.marketCap.toFixed(2)}</Description>
       <Divider />
-      <Description>Price: {analytics.price.toFixed(2)}</Description>
+      <Description>Price: ${analytics.price.toFixed(2)}</Description>
       <Divider />
       <Description>
         Price Change (24H): {analytics.pricePercentCount.h24.toFixed(2)}%
@@ -78,7 +78,7 @@ export const CardTickersInfo = ({
       <Description>Sells (24H): {analytics.txsSellsCount.h24}</Description>
       <Divider />
       <Description>
-        Volume (24H): {analytics.volumeCount.h24.toFixed(2)}
+        Volume (24H): ${analytics.volumeCount.h24.toFixed(2)}
       </Description>
       <Divider />
       <Description>DEX: {analytics.dex.name}</Description>
