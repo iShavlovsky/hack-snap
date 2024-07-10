@@ -1,3 +1,4 @@
+import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import styled from 'styled-components';
 
 import {
@@ -111,11 +112,19 @@ const Index = () => {
     : snapsDetected;
 
   const handleSendHelloClick = async () => {
-    await invokeSnap({ method: 'hello' });
+    await invokeSnap({
+      method: 'hello',
+      params: { filter1: true, filter2: false },
+    });
   };
 
   return (
     <Container>
+      <FormGroup>
+        <FormControlLabel control={<Checkbox defaultChecked />} label="Label" />
+        <FormControlLabel required control={<Checkbox />} label="Required" />
+        <FormControlLabel disabled control={<Checkbox />} label="Disabled" />
+      </FormGroup>
       <Heading>
         Welcome to <Span>template-snap</Span>
       </Heading>

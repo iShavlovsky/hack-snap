@@ -1,4 +1,8 @@
-import type { OnTransactionHandler } from '@metamask/snaps-sdk';
+import type {
+  OnInstallHandler,
+  OnRpcRequestHandler,
+  OnTransactionHandler,
+} from '@metamask/snaps-sdk';
 import { heading, panel, text, divider } from '@metamask/snaps-sdk';
 
 import { mock } from './mock-api';
@@ -33,6 +37,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
     updatedAt: '',
     userId: 0,
   };
+
   await fetch('https://jsonplaceholder.org/posts/1')
     .then(async (response) => {
       if (!response.ok) {
@@ -71,4 +76,41 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
       text(`Network: ${analytics.network.name}`),
     ]),
   };
+};
+
+export const onInstall: OnInstallHandler = async () => {
+  await snap.request({
+    method: 'snap_dialog',
+    params: {
+      type: 'alert',
+      content: panel([
+        heading('Привте Мир'),
+        text('Смотри доки [metamask.io](https://metamask.io).'),
+      ]),
+    },
+  });
+};
+
+export const onRpcRequest: OnRpcRequestHandler = async ({
+  origin,
+  request,
+}) => {
+  // const analytics = mock;
+  switch (request.method) {
+    case 'hello':
+      return await snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: 'alert',
+
+          content: panel([
+            text(`origin: ${origin}`),
+            text(`request: ${JSON.stringify(request.params)}`),
+          ]),
+        },
+      });
+
+    default:
+      throw new Error('Method not found.');
+  }
 };
