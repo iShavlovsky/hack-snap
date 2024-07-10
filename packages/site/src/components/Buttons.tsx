@@ -100,7 +100,7 @@ export const SendHelloButton = (props: ComponentProps<typeof Button>) => {
 };
 
 export const ClearButton = (props: ComponentProps<typeof Button>) => {
-  return <Button {...props}>Clear Checked</Button>;
+  return <Button {...props}>Clear</Button>;
 };
 
 export const SendButton = (props: ComponentProps<typeof Button>) => {
