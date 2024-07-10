@@ -1,4 +1,5 @@
-import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { RequestEnum } from '../../../../types/requests';
@@ -115,14 +116,14 @@ const Index = () => {
     ? isFlask
     : snapsDetected;
 
-  const handleSendHelloClick = async () => {
+  const handleSendParamsToStore = useCallback(async () => {
     await invokeSnap({
       method: RequestEnum.UpdateParams,
       params: {
         fields: params,
       },
     });
-  };
+  }, [params]);
 
   return (
     <Container>
@@ -163,6 +164,10 @@ const Index = () => {
           onChange={() => handleParams('topTraders')}
         />
       </FormGroup>
+
+      <Button onClick={handleSendParamsToStore} variant="outlined">
+        Send to store
+      </Button>
 
       <Heading>
         Welcome to <Span>template-snap</Span>
@@ -226,7 +231,7 @@ const Index = () => {
               'Display a custom message within a confirmation screen in MetaMask.',
             button: (
               <SendHelloButton
-                onClick={handleSendHelloClick}
+                // onClick={handleSendHelloClick}
                 disabled={!installedSnap}
               />
             ),

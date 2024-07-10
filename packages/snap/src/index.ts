@@ -93,7 +93,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_manageState',
         params: {
           operation: 'update',
-          newState: { fields: request.params as UpdateRequestParams },
+          newState: { store: request.params as UpdateRequestParams },
           encrypted: false,
         },
       });
