@@ -1,4 +1,3 @@
-import { divider, heading, text } from '@metamask/snaps-sdk';
 import { Divider } from '@mui/material';
 import styled from 'styled-components';
 
