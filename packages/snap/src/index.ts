@@ -1,10 +1,11 @@
 import type {
-  OnInstallHandler,
-  OnRpcRequestHandler,
   OnTransactionHandler,
+  OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
 import { heading, panel, text, divider } from '@metamask/snaps-sdk';
 
+import type { UpdateRequestParams } from '../../../types/requests';
+import { RequestEnum } from '../../../types/requests';
 import { mock } from './mock-api';
 
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
@@ -37,7 +38,6 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
     updatedAt: '',
     userId: 0,
   };
-
   await fetch('https://jsonplaceholder.org/posts/1')
     .then(async (response) => {
       if (!response.ok) {
@@ -55,6 +55,14 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
 
   const analytics = mock;
 
+  const persistedData = await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: 'get',
+      encrypted: false,
+    },
+  });
+
   return {
     content: panel([
       heading('Token Analytics'),
@@ -63,7 +71,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
       text(`tokenAddress: ${tokenAddress}`),
       text(`amount: ${amount}`),
       divider(),
-      text(`Token: ${analytics.pairInfo.ticker}`),
+      text(`State data: ${JSON.stringify(persistedData)}`),
       text(`Liquidity: $${analytics.liquidity.toFixed(2)}`),
       text(`Market Cap: $${analytics.marketCap.toFixed(2)}`),
       text(`Price: $${analytics.price.toFixed(2)}`),
@@ -78,38 +86,25 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   };
 };
 
-export const onInstall: OnInstallHandler = async () => {
-  await snap.request({
-    method: 'snap_dialog',
-    params: {
-      type: 'alert',
-      content: panel([
-        heading('Привте Мир'),
-        text('Смотри доки [metamask.io](https://metamask.io).'),
-      ]),
-    },
-  });
-};
-
-export const onRpcRequest: OnRpcRequestHandler = async ({
-  origin,
-  request,
-}) => {
-  // const analytics = mock;
+export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
-    case 'hello':
+    case RequestEnum.UpdateParams:
       return await snap.request({
-        method: 'snap_dialog',
+        method: 'snap_manageState',
         params: {
-          type: 'alert',
-
-          content: panel([
-            text(`origin: ${origin}`),
-            text(`request: ${JSON.stringify(request.params)}`),
-          ]),
+          operation: 'update',
+          newState: { fields: request.params as UpdateRequestParams },
+          encrypted: false,
         },
       });
-
+    case RequestEnum.RemoveParams:
+      return await snap.request({
+        method: 'snap_manageState',
+        params: {
+          operation: 'clear',
+          encrypted: false,
+        },
+      });
     default:
       throw new Error('Method not found.');
   }

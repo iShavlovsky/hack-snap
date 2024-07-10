@@ -1,6 +1,7 @@
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import styled from 'styled-components';
 
+import { RequestEnum } from '../../../../types/requests';
 import {
   ConnectButton,
   InstallFlaskButton,
@@ -9,6 +10,7 @@ import {
   Card,
 } from '../components';
 import { defaultSnapOrigin } from '../config';
+import { useStateContext } from '../contexts/StateContext';
 import {
   useMetaMask,
   useInvokeSnap,
@@ -107,24 +109,61 @@ const Index = () => {
   const requestSnap = useRequestSnap();
   const invokeSnap = useInvokeSnap();
 
+  const { params, handleParams } = useStateContext();
+
   const isMetaMaskReady = isLocalSnap(defaultSnapOrigin)
     ? isFlask
     : snapsDetected;
 
   const handleSendHelloClick = async () => {
     await invokeSnap({
-      method: 'hello',
-      params: { filter1: true, filter2: false },
+      method: RequestEnum.UpdateParams,
+      params: {
+        fields: params,
+      },
     });
   };
 
   return (
     <Container>
       <FormGroup>
-        <FormControlLabel control={<Checkbox defaultChecked />} label="Label" />
-        <FormControlLabel required control={<Checkbox />} label="Required" />
-        <FormControlLabel disabled control={<Checkbox />} label="Disabled" />
+        <FormControlLabel
+          id="orderBook"
+          checked={params.includes('orderBook')}
+          control={<Checkbox />}
+          label="Order Book"
+          onChange={() => handleParams('orderBook')}
+        />
+        <FormControlLabel
+          id="priceChart"
+          checked={params.includes('priceChart')}
+          control={<Checkbox />}
+          label="Price Chart"
+          onChange={() => handleParams('priceChart')}
+        />
+        <FormControlLabel
+          id="tokenInfo"
+          checked={params.includes('tokenInfo')}
+          control={<Checkbox />}
+          label="Token Info"
+          onChange={() => handleParams('tokenInfo')}
+        />
+        <FormControlLabel
+          id="securityCheck"
+          checked={params.includes('securityCheck')}
+          control={<Checkbox />}
+          label="Security Check"
+          onChange={() => handleParams('securityCheck')}
+        />
+        <FormControlLabel
+          id="topTraders"
+          checked={params.includes('topTraders')}
+          control={<Checkbox />}
+          label="Top traders"
+          onChange={() => handleParams('topTraders')}
+        />
       </FormGroup>
+
       <Heading>
         Welcome to <Span>template-snap</Span>
       </Heading>

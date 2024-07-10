@@ -4,5 +4,11 @@
       "fileMatch": ["snap.manifest.json"],
       "url": "https://raw.githubusercontent.com/MetaMask/SIPs/main/assets/sip-9/snap.manifest.schema.json"
     }
-  ]
+  ],
+  "editor.mouseWheelZoom": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.wordWrap": "on",
+  "editor.tabSize": 2,
 }
