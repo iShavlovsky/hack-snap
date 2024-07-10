@@ -246,7 +246,7 @@ const Index = () => {
           {/* todo: Card Tickers Info*/}
           <CardTickersInfo
             content={{
-              title: 'Info about ETH/USDC',
+              title: 'Token Analytics',
             }}
           />
 

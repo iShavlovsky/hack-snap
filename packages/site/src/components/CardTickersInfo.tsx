@@ -1,4 +1,10 @@
+import { divider, heading, text } from '@metamask/snaps-sdk';
+import { Divider } from '@mui/material';
 import styled from 'styled-components';
+
+import { mock } from './mock-api';
+
+const analytics = mock;
 
 type CardTickersInfoProps = {
   content: {
@@ -39,6 +45,10 @@ const Title = styled.h2`
   }
 `;
 
+const Description = styled.div`
+  margin-top: 1rem;
+`;
+
 export const CardTickersInfo = ({
   content,
   disabled = false,
@@ -48,6 +58,34 @@ export const CardTickersInfo = ({
   return (
     <CardTickersInfoWrapep fullWidth={fullWidth} disabled={disabled}>
       {title && <Title>{title}</Title>}
+      <Description>Token: {analytics.pairInfo.ticker}</Description>
+      <Divider />
+      <Description>Liquidity: {analytics.liquidity.toFixed(2)}</Description>
+      <Divider />
+      <Description>Market Cap: {analytics.marketCap.toFixed(2)}</Description>
+      <Divider />
+      <Description>Price: {analytics.price.toFixed(2)}</Description>
+      <Divider />
+      <Description>
+        Price Change (24H): {analytics.pricePercentCount.h24.toFixed(2)}%
+      </Description>
+      <Divider />
+      <Description>
+        DEX Transactions (24H): {analytics.txsCount.h24}
+      </Description>
+      <Divider />
+      <Description>Buys (24H): {analytics.txsBuysCount.h24}</Description>
+      <Divider />
+      <Description>Sells (24H): {analytics.txsSellsCount.h24}</Description>
+      <Divider />
+      <Description>
+        Volume (24H): {analytics.volumeCount.h24.toFixed(2)}
+      </Description>
+      <Divider />
+      <Description>DEX: {analytics.dex.name}</Description>
+      <Divider />
+      <Description>Network: {analytics.network.name}</Description>
+      <Divider />
     </CardTickersInfoWrapep>
   );
 };
