@@ -4,7 +4,7 @@ import styled from 'styled-components';
 type CardProps = {
   content: {
     title?: string;
-    description: ReactNode;
+    description?: ReactNode;
     button?: ReactNode;
   };
   disabled?: boolean;
@@ -19,7 +19,6 @@ const CardWrapper = styled.div<{
   flex-direction: column;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : '250px')};
   background-color: ${({ theme }) => theme.colors.card?.default};
-  margin-top: 2.4rem;
   margin-bottom: 2.4rem;
   padding: 2.4rem;
   border: 1px solid ${({ theme }) => theme.colors.border?.default};

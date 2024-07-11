@@ -1,5 +1,9 @@
+import {
+  ThemeProvider as ThemeProviderMui,
+  createTheme,
+} from '@mui/material/styles';
 import type { FunctionComponent, ReactNode } from 'react';
-import { createContext, useState } from 'react';
+import { createContext, useMemo, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import { dark, light } from './config/theme';
@@ -25,12 +29,24 @@ export const Root: FunctionComponent<RootProps> = ({ children }) => {
     setDarkTheme(!darkTheme);
   };
 
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: darkTheme ? 'dark' : 'light',
+        },
+      }),
+    [darkTheme],
+  );
+
   return (
     <ToggleThemeContext.Provider value={toggleTheme}>
       <ThemeProvider theme={darkTheme ? dark : light}>
-        <MetaMaskProvider>
-          <StateProvider>{children}</StateProvider>
-        </MetaMaskProvider>
+        <ThemeProviderMui theme={theme}>
+          <MetaMaskProvider>
+            <StateProvider>{children}</StateProvider>
+          </MetaMaskProvider>
+        </ThemeProviderMui>
       </ThemeProvider>
     </ToggleThemeContext.Provider>
   );

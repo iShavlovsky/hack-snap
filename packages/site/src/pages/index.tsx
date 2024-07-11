@@ -1,5 +1,5 @@
-import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
-import { useCallback } from 'react';
+import { LoadingButton } from '@mui/lab';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { RequestEnum } from '../../../../types/requests';
@@ -10,6 +10,10 @@ import {
   SendHelloButton,
   Card,
 } from '../components';
+import { AnalyticsForm } from '../components/AnalitycsForm';
+import { CardTickersInfo } from '../components/CardTickersInfo';
+import { ChartIndicators } from '../components/ChartIndicators';
+import { ChartOrders } from '../components/ChartOrders';
 import { defaultSnapOrigin } from '../config';
 import { useStateContext } from '../contexts/StateContext';
 import {
@@ -19,11 +23,11 @@ import {
   useRequestSnap,
 } from '../hooks';
 import { isLocalSnap, shouldDisplayReconnectButton } from '../utils';
+import { whatToFarm, birdEye, dexScreneer } from './mockFiltersData';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   flex: 1;
   margin-top: 7.6rem;
   margin-bottom: 7.6rem;
@@ -34,6 +38,35 @@ const Container = styled.div`
     margin-bottom: 2rem;
     width: auto;
   }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const WrapperChart = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`;
+
+const WrapperRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin-top: 2rem;
+`;
+
+const ContainerRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  flex: 1;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+  gap: 2rem;
+  padding: 0 5rem;
 `;
 
 const Heading = styled.h1`
@@ -51,6 +84,7 @@ const Subtitle = styled.p`
   font-weight: 500;
   margin-top: 0;
   margin-bottom: 0;
+  text-align: center;
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
@@ -58,13 +92,12 @@ const Subtitle = styled.p`
 
 const CardContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-between;
-  max-width: 64.8rem;
+  max-width: 30rem;
   width: 100%;
   height: 100%;
-  margin-top: 1.5rem;
 `;
 
 const Notice = styled.div`
@@ -74,8 +107,6 @@ const Notice = styled.div`
   border-radius: ${({ theme }) => theme.radii.default};
   padding: 2.4rem;
   margin-top: 2.4rem;
-  max-width: 60rem;
-  width: 100%;
 
   & > * {
     margin: 0;
@@ -104,154 +135,271 @@ const ErrorMessage = styled.div`
   }
 `;
 
+// /**
+//  *
+//  */
+// function Chart() {
+//   return null;
+// }
+//
+// /**
+//  *
+//  */
+// function Deposits() {
+//   return null;
+// }
+//
+// /**
+//  *
+//  */
+// function Orders() {
+//   return null;
+// }
+//
+// /**
+//  *
+//  * @param props
+//  * @param props.sx
+//  * @param props.sx.pt
+//  */
+// function Copyright(props: { sx: { pt: number } }) {
+//   return null;
+// }
+
 const Index = () => {
+  const [loadingState, setLoadingState] = useState({
+    sendParams: false,
+    clearParams: false,
+  });
+
   const { error } = useMetaMaskContext();
   const { isFlask, snapsDetected, installedSnap } = useMetaMask();
   const requestSnap = useRequestSnap();
   const invokeSnap = useInvokeSnap();
 
-  const { params, handleParams } = useStateContext();
+  const { params, handleParams, resetStore } = useStateContext();
+
+  const birdEyeSelectedParams = useMemo(() => params.birdEye, [params.birdEye]);
+
+  const dexScreneerSelectedParams = useMemo(
+    () => params.dexScreneer,
+    [params.dexScreneer],
+  );
+
+  const whatToFarmSelectedParams = useMemo(
+    () => params.whatToFarm,
+    [params.whatToFarm],
+  );
 
   const isMetaMaskReady = isLocalSnap(defaultSnapOrigin)
     ? isFlask
     : snapsDetected;
 
-  const handleSendParamsToStore = useCallback(async () => {
-    await invokeSnap({
-      method: RequestEnum.UpdateParams,
-      params: {
-        fields: params,
-      },
-    });
-  }, [params]);
+  const resetStoreParams = async () => {
+    setLoadingState((prevState) => ({
+      ...prevState,
+      clearParams: true,
+    }));
+    try {
+      await invokeSnap({
+        method: RequestEnum.RemoveParams,
+      });
+      resetStore();
+      setLoadingState((prevState) => ({
+        ...prevState,
+        clearParams: false,
+      }));
+    } catch (err) {
+      setLoadingState((prevState) => ({
+        ...prevState,
+        clearParams: false,
+      }));
+    }
+  };
+
+  const sendParamsToStore = useCallback(async () => {
+    setLoadingState((prevState) => ({ ...prevState, sendParams: true }));
+    try {
+      await invokeSnap({
+        method: RequestEnum.UpdateParams,
+        params: {
+          fields: params.whatToFarm,
+        },
+      });
+      setLoadingState((prevState) => ({
+        ...prevState,
+        sendParams: false,
+      }));
+    } catch (err) {
+      console.log(err);
+      setLoadingState((prevState) => ({
+        ...prevState,
+        sendParams: false,
+      }));
+    }
+  }, [params.whatToFarm]);
 
   return (
     <Container>
-      <FormGroup>
-        <FormControlLabel
-          id="orderBook"
-          checked={params.includes('orderBook')}
-          control={<Checkbox />}
-          label="Order Book"
-          onChange={() => handleParams('orderBook')}
-        />
-        <FormControlLabel
-          id="priceChart"
-          checked={params.includes('priceChart')}
-          control={<Checkbox />}
-          label="Price Chart"
-          onChange={() => handleParams('priceChart')}
-        />
-        <FormControlLabel
-          id="tokenInfo"
-          checked={params.includes('tokenInfo')}
-          control={<Checkbox />}
-          label="Token Info"
-          onChange={() => handleParams('tokenInfo')}
-        />
-        <FormControlLabel
-          id="securityCheck"
-          checked={params.includes('securityCheck')}
-          control={<Checkbox />}
-          label="Security Check"
-          onChange={() => handleParams('securityCheck')}
-        />
-        <FormControlLabel
-          id="topTraders"
-          checked={params.includes('topTraders')}
-          control={<Checkbox />}
-          label="Top traders"
-          onChange={() => handleParams('topTraders')}
-        />
-      </FormGroup>
-
-      <Button onClick={handleSendParamsToStore} variant="outlined">
-        Send to store
-      </Button>
-
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        Welcome to <Span>WTF Analytics</Span>
       </Heading>
       <Subtitle>
-        Get started by editing <code>src/index.ts</code>
+        Get started by <code>https://whattofarm.io</code>
       </Subtitle>
-      <CardContainer>
-        {error && (
-          <ErrorMessage>
-            <b>An error happened:</b> {error.message}
-          </ErrorMessage>
-        )}
-        {!isMetaMaskReady && (
-          <Card
+      <ContainerRow>
+        <Wrapper>
+          {/* todo: form 1 WhatToFarm*/}
+          <AnalyticsForm
             content={{
-              title: 'Install',
-              description:
-                'Snaps is pre-release software only available in MetaMask Flask, a canary distribution for developers with access to upcoming features.',
-              button: <InstallFlaskButton />,
+              title: 'WhatToFarm',
             }}
-            fullWidth
+            data={whatToFarm}
+            selectedValues={whatToFarmSelectedParams}
+            onChange={(val) => handleParams('whatToFarm', val)}
           />
-        )}
-        {!installedSnap && (
-          <Card
+
+          {/* todo: form 2 WhatToFarm*/}
+          <AnalyticsForm
+            selectedValues={dexScreneerSelectedParams}
+            data={dexScreneer}
+            onChange={(val) => handleParams('dexScreneer', val)}
             content={{
-              title: 'Connect',
-              description:
-                'Get started by connecting to and installing the example snap.',
-              button: (
-                <ConnectButton
-                  onClick={requestSnap}
-                  disabled={!isMetaMaskReady}
-                />
-              ),
+              title: 'DexScreneer',
             }}
-            disabled={!isMetaMaskReady}
           />
-        )}
-        {shouldDisplayReconnectButton(installedSnap) && (
+
+          {/* todo: form 3 WhatToFarm*/}
+          <AnalyticsForm
+            selectedValues={birdEyeSelectedParams}
+            data={birdEye}
+            onChange={(val) => handleParams('birdEye', val)}
+            content={{
+              title: 'BirdEye',
+            }}
+          />
+
+          <WrapperRow>
+            <LoadingButton
+              size="large"
+              variant="outlined"
+              onClick={resetStoreParams}
+              loading={loadingState.clearParams}
+            >
+              <span>Clear</span>
+            </LoadingButton>
+            <LoadingButton
+              size="large"
+              variant="contained"
+              onClick={sendParamsToStore}
+              loading={loadingState.sendParams}
+            >
+              <span>Send Analitycs</span>
+            </LoadingButton>
+            {/* <ClearButton onClick={resetStoreParams} disabled={!installedSnap} /> */}
+            {/* <SendButton onClick={sendParamsToStore} disabled={!installedSnap} /> */}
+          </WrapperRow>
+        </Wrapper>
+        <WrapperChart>
+          {/* todo: Chart Indicators*/}
+          <ChartIndicators
+            content={{
+              title: 'ETH/USDC',
+            }}
+          />
+          {/* todo: Chart Orders*/}
+          <ChartOrders
+            content={{
+              title: 'Price Chart',
+            }}
+          />
+        </WrapperChart>
+
+        <CardContainer>
+          {error && (
+            <ErrorMessage>
+              <b>An error happened:</b> {error.message}
+            </ErrorMessage>
+          )}
+          {/* todo: Card Tickers Info*/}
+          <CardTickersInfo
+            content={{
+              title: 'Token Analytics',
+            }}
+          />
+
+          {!isMetaMaskReady && (
+            <Card
+              content={{
+                title: 'Install',
+                description:
+                  'Snaps is pre-release software only available in MetaMask Flask, a canary distribution for developers with access to upcoming features.',
+                button: <InstallFlaskButton />,
+              }}
+              fullWidth
+            />
+          )}
+          {!installedSnap && (
+            <Card
+              content={{
+                title: 'Connect',
+                description:
+                  'Get started by connecting to and installing the example snap.',
+                button: (
+                  <ConnectButton
+                    onClick={requestSnap}
+                    disabled={!isMetaMaskReady}
+                  />
+                ),
+              }}
+              disabled={!isMetaMaskReady}
+            />
+          )}
+          {shouldDisplayReconnectButton(installedSnap) && (
+            <Card
+              content={{
+                title: 'Reconnect',
+                description:
+                  'While connected to a local running snap this button will always be displayed in order to update the snap if a change is made.',
+                button: (
+                  <ReconnectButton
+                    onClick={requestSnap}
+                    disabled={!installedSnap}
+                  />
+                ),
+              }}
+              disabled={!installedSnap}
+            />
+          )}
           <Card
             content={{
-              title: 'Reconnect',
+              title: 'Send Hello message',
               description:
-                'While connected to a local running snap this button will always be displayed in order to update the snap if a change is made.',
+                'Display a custom message within a confirmation screen in MetaMask.',
               button: (
-                <ReconnectButton
-                  onClick={requestSnap}
+                <SendHelloButton
+                  // onClick={handleSendHelloClick}
                   disabled={!installedSnap}
                 />
               ),
             }}
             disabled={!installedSnap}
+            fullWidth={
+              isMetaMaskReady &&
+              Boolean(installedSnap) &&
+              !shouldDisplayReconnectButton(installedSnap)
+            }
           />
-        )}
-        <Card
-          content={{
-            title: 'Send Hello message',
-            description:
-              'Display a custom message within a confirmation screen in MetaMask.',
-            button: (
-              <SendHelloButton
-                // onClick={handleSendHelloClick}
-                disabled={!installedSnap}
-              />
-            ),
-          }}
-          disabled={!installedSnap}
-          fullWidth={
-            isMetaMaskReady &&
-            Boolean(installedSnap) &&
-            !shouldDisplayReconnectButton(installedSnap)
-          }
-        />
-        <Notice>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
-        </Notice>
-      </CardContainer>
+          <Notice>
+            <p>
+              Please note that the <b>snap.manifest.json</b> and{' '}
+              <b>package.json</b> must be located in the server root directory
+              and the bundle must be hosted at the location specified by the
+              location field.
+            </p>
+          </Notice>
+        </CardContainer>
+      </ContainerRow>
     </Container>
   );
 };
