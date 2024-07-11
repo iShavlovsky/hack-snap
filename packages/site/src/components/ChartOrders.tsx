@@ -1,5 +1,5 @@
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import type { GridColDef } from '@mui/x-data-grid';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
 
@@ -17,7 +17,7 @@ type Row = {
 };
 
 const BigRow = 160;
-const SmallRow = 90;
+const SmallRow = 120;
 
 const columns: GridColDef[] = [
   { field: 'date', headerName: 'Date', width: SmallRow },
@@ -114,16 +114,11 @@ const rows: Row[] = [
 /**
  *
  */
-const theme = createTheme({
-  typography: {
-    fontSize: 20, // Базовый размер шрифта
-  },
-});
 
 /**
  *
  */
-export default function ChartOrders() {
+export default function chartOrders() {
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
