@@ -1,6 +1,8 @@
 import { Grid, Paper } from '@mui/material';
 import styled from 'styled-components';
 
+import Chart from './Chart';
+
 type ChartIndicatorsProps = {
   content: {
     title?: string;
@@ -18,21 +20,18 @@ const Title = styled.h2`
 /**
  *
  */
-function Chart() {
-  return null;
-}
 
 export const ChartIndicators = ({ content }: ChartIndicatorsProps) => {
   const { title } = content;
   return (
     <Grid>
-      <Title>{title}</Title>
+      {title && <Title>{title}</Title>}
       <Paper
         sx={{
-          p: 2,
+          borderRadius: 5,
+          overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          height: 240,
           mb: 2,
         }}
       >

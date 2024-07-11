@@ -56,5 +56,9 @@
       "@lavamoat/preinstall-always-fail": false,
       "sharp": true
     }
+  },
+  "dependencies": {
+    "@mui/x-charts": "^7.10.0",
+    "@mui/x-data-grid": "^7.10.0"
   }
 }

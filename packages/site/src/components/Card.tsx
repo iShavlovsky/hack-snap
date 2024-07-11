@@ -8,7 +8,6 @@ type CardProps = {
     button?: ReactNode;
   };
   disabled?: boolean;
-  fullWidth?: boolean;
 };
 
 const CardWrapper = styled.div<{
@@ -17,7 +16,6 @@ const CardWrapper = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : '250px')};
   background-color: ${({ theme }) => theme.colors.card?.default};
   margin-bottom: 2.4rem;
   padding: 2.4rem;
@@ -47,10 +45,10 @@ const Description = styled.div`
   margin-bottom: 2.4rem;
 `;
 
-export const Card = ({ content, disabled = false, fullWidth }: CardProps) => {
+export const Card = ({ content, disabled = false }: CardProps) => {
   const { title, description, button } = content;
   return (
-    <CardWrapper fullWidth={fullWidth} disabled={disabled}>
+    <CardWrapper disabled={disabled}>
       {title && <Title>{title}</Title>}
       <Description>{description}</Description>
       {button}

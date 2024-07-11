@@ -10,7 +10,6 @@ type CardTickersInfoProps = {
     title?: string;
   };
   disabled?: boolean;
-  fullWidth?: boolean;
 };
 
 const CardTickersInfoWrapep = styled.div<{
@@ -19,7 +18,6 @@ const CardTickersInfoWrapep = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : '250px')};
   background-color: ${({ theme }) => theme.colors.card?.default};
   margin-bottom: 2.4rem;
   padding: 2.4rem;
@@ -51,11 +49,10 @@ const Description = styled.div`
 export const CardTickersInfo = ({
   content,
   disabled = false,
-  fullWidth,
 }: CardTickersInfoProps) => {
   const { title } = content;
   return (
-    <CardTickersInfoWrapep fullWidth={fullWidth} disabled={disabled}>
+    <CardTickersInfoWrapep disabled={disabled}>
       {title && <Title>{title}</Title>}
       <Description>Token: {analytics.pairInfo.ticker}</Description>
       <Divider />
