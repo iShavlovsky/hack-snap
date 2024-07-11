@@ -1,3 +1,4 @@
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
@@ -113,6 +114,15 @@ const rows: Row[] = [
 /**
  *
  */
+const theme = createTheme({
+  typography: {
+    fontSize: 20, // Базовый размер шрифта
+  },
+});
+
+/**
+ *
+ */
 export default function ChartOrders() {
   return (
     <div style={{ height: 400, width: '100%' }}>
@@ -126,6 +136,14 @@ export default function ChartOrders() {
         }}
         pageSizeOptions={[5, 10]}
         checkboxSelection
+        sx={{
+          '& .MuiDataGrid-columnHeaders': {
+            fontSize: '1.7rem', // Размер шрифта заголовков колонок
+          },
+          '& .MuiDataGrid-cell': {
+            fontSize: '1.7rem', // Размер шрифта ячеек данных
+          },
+        }}
       />
     </div>
   );

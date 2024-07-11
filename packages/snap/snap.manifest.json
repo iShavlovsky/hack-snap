@@ -1,13 +1,13 @@
 {
   "version": "0.1.0",
-  "description": "Analytics WTF",
-  "proposedName": "Analytics",
+  "description": "Degen Watch — is your analytical assistant!",
+  "proposedName": "Degen Watch",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/template-snap-monorepo.git"
   },
   "source": {
-    "shasum": "0Oi9YJ1iL3kRVURvxfu3CtvtSvT+eU5xMv5syTdsles=",
+    "shasum": "gHLle6kVhaWf59QyU2I5raYeWKR5rvbbORDMBHLwMRA=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -19,6 +19,7 @@
   "initialPermissions": {
     "endowment:transaction-insight": {},
     "endowment:lifecycle-hooks": {},
+    "endowment:page-home": {},
     "endowment:ethereum-provider": {},
     "endowment:network-access": {},
     "endowment:webassembly": {},
