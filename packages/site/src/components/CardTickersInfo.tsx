@@ -13,24 +13,22 @@ type CardTickersInfoProps<T> = {
   data: OptionType<T>[];
 };
 
-const CardTickersInfoWrapep = styled.div<{
+const CardTickersInfoWraper = styled.div<{
   fullWidth?: boolean | undefined;
   disabled?: boolean | undefined;
 }>`
   display: flex;
   flex-direction: column;
+  min-height: 19rem;
   background-color: ${({ theme }) => theme.colors.card?.default};
-  margin-bottom: 2.4rem;
   padding: 2.4rem;
   border: 1px solid ${({ theme }) => theme.colors.border?.default};
-  border-radius: ${({ theme }) => theme.radii.default};
+  border-radius: 0.5rem;
   box-shadow: ${({ theme }) => theme.shadows.default};
   filter: opacity(${({ disabled }) => (disabled ? '.4' : '1')});
   align-self: stretch;
   ${({ theme }) => theme.mediaQueries.small} {
     width: 100%;
-    margin-top: 1.2rem;
-    margin-bottom: 1.2rem;
     padding: 1.6rem;
   }
 `;
@@ -55,7 +53,7 @@ export const CardTickersInfo = <T,>({
 }: CardTickersInfoProps<T>) => {
   const { title } = content;
   return (
-    <CardTickersInfoWrapep fullWidth={fullWidth} disabled={disabled}>
+    <CardTickersInfoWraper fullWidth={fullWidth} disabled={disabled}>
       {title && <Title>{title}</Title>}
       {data.map(({ label }, index) => (
         <React.Fragment key={index}>
@@ -70,6 +68,6 @@ export const CardTickersInfo = <T,>({
           Select one of the filters to display analytics
         </Description>
       )}
-    </CardTickersInfoWrapep>
+    </CardTickersInfoWraper>
   );
 };

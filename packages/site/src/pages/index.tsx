@@ -1,4 +1,5 @@
 import { LoadingButton } from '@mui/lab';
+import { scopedCssBaselineClasses } from '@mui/material';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
@@ -13,7 +14,6 @@ import {
 } from '../components';
 import { AnalyticsForm } from '../components/AnalitycsForm';
 import { CardTickersInfo } from '../components/CardTickersInfo';
-import { ChartIndicators } from '../components/ChartIndicators';
 import ChartMaterial from '../components/ChartMaterial';
 import ChartOrders from '../components/ChartOrders';
 import GreedIndex from '../components/GreedIndex';
@@ -46,12 +46,13 @@ const Container = styled.div`
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 1em;
 `;
 
 const WrapperChart = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 70%;
+  max-width: 40vw;
 `;
 
 const WrapperRow = styled.div`
@@ -75,6 +76,7 @@ const ContainerRow = styled.div`
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 1em;
   flex-wrap: wrap;
   justify-content: space-between;
   max-width: 30rem;
@@ -86,15 +88,13 @@ const Notice = styled.div`
   background-color: ${({ theme }) => theme.colors.background?.alternative};
   border: 1px solid ${({ theme }) => theme.colors.border?.default};
   color: ${({ theme }) => theme.colors.text?.alternative};
-  border-radius: ${({ theme }) => theme.radii.default};
+  border-radius: 0.5rem;
   padding: 2.4rem;
-  margin-top: 2.4rem;
 
   & > * {
     margin: 0;
   }
   ${({ theme }) => theme.mediaQueries.small} {
-    margin-top: 1.2rem;
     padding: 1.6rem;
   }
 `;
@@ -103,7 +103,7 @@ const ErrorMessage = styled.div`
   background-color: ${({ theme }) => theme.colors.error?.muted};
   border: 1px solid ${({ theme }) => theme.colors.error?.default};
   color: ${({ theme }) => theme.colors.error?.alternative};
-  border-radius: ${({ theme }) => theme.radii.default};
+  border-radius: 0.5rem;
   padding: 2.4rem;
   margin-bottom: 2.4rem;
   margin-top: 2.4rem;
@@ -222,12 +222,6 @@ const Index = () => {
           </WrapperRow>
         </Wrapper>
         <WrapperChart>
-          {/* todo: Chart Indicators*/}
-          <ChartIndicators
-            content={{
-              title: '',
-            }}
-          />
           {/* todo: Chart Indicators*/}
           <ChartMaterial />
           {/* todo: Chart Orders*/}

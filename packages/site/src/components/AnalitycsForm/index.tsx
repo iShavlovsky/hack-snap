@@ -8,6 +8,19 @@ import styled from 'styled-components';
 
 import type { OptionType } from '../../types';
 
+const FormWrapper = styled.div`
+  background-color: ${({ theme }) => theme.colors.card?.default};
+  border: 1px solid ${({ theme }) => theme.colors.border?.default};
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: ${({ theme }) => theme.shadows.default};
+  padding: 2.4rem;
+  align-self: stretch;
+  ${({ theme }) => theme.mediaQueries.small} {
+    width: 100%;
+    padding: 1.6rem;
+  }
+`;
 type CardProps<T> = {
   content: {
     title?: string;
@@ -38,26 +51,28 @@ export const AnalyticsForm = <T,>({
 }: CardProps<T>) => {
   const { title } = content;
   return (
-    <FormControl component="fieldset" sx={{ mb: CheckboxLabelMb }}>
-      <Title>{title}</Title>
-      <FormGroup>
-        {data.map(({ label, value }, index) => (
-          <FormControlLabel
-            key={index}
-            checked={selectedValues?.includes(value)}
-            control={
-              <Checkbox
-                color="primary"
-                sx={{ '& .MuiSvgIcon-root': { fontSize: CheckboxIcoSize } }}
-              />
-            }
-            onChange={() => onChange(value)}
-            label={label}
-            labelPlacement={CheckboxLabelPosition}
-            sx={{ span: { fontSize: CheckboxLabelSize } }}
-          />
-        ))}
-      </FormGroup>
-    </FormControl>
+    <FormWrapper>
+      <FormControl component="fieldset">
+        <Title>{title}</Title>
+        <FormGroup>
+          {data.map(({ label, value }, index) => (
+            <FormControlLabel
+              key={index}
+              checked={selectedValues?.includes(value)}
+              control={
+                <Checkbox
+                  color="primary"
+                  sx={{ '& .MuiSvgIcon-root': { fontSize: CheckboxIcoSize } }}
+                />
+              }
+              onChange={() => onChange(value)}
+              label={label}
+              labelPlacement={CheckboxLabelPosition}
+              sx={{ span: { fontSize: CheckboxLabelSize } }}
+            />
+          ))}
+        </FormGroup>
+      </FormControl>
+    </FormWrapper>
   );
 };

@@ -1,6 +1,37 @@
 import type { Theme } from '@mui/material';
 
-export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
+export const getDesignTokens = (
+  mode: 'light' | 'dark',
+): {
+  typography: { body1: { fontSize: string }; body2: { fontSize: string } };
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        contained: { boxShadow: string; '&:hover': { boxShadow: string } };
+        outlined: ({ theme }: { theme: any }) => {
+          '&:hover': { border: string; '& span': { transition: string } };
+        };
+        root: ({ theme }: { theme: any }) => {
+          border: string;
+          padding: string;
+          overflow: string;
+          borderRadius: string;
+          fontSize: string;
+          position: string;
+          transition: string;
+          textTransform: string;
+        };
+        text: { '&:hover': { background: string } };
+      };
+    };
+  };
+  palette: {
+    mode: 'light' | 'dark';
+    background: { default: string; paper: string };
+    text: { primary: string };
+    primary: { main: string };
+  };
+} => ({
   palette: {
     mode,
     ...(mode === 'light'
@@ -29,6 +60,14 @@ export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
           },
         }),
   },
+  typography: {
+    body1: {
+      fontSize: '1.5rem', // Измените на желаемый размер шрифта
+    },
+    body2: {
+      fontSize: '1.85rem', // Измените на желаемый размер шрифта
+    },
+  },
   components: {
     MuiButton: {
       styleOverrides: {
@@ -36,7 +75,7 @@ export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
           position: 'relative',
           overflow: 'hidden',
           padding: '10px 20px',
-          fontSize: '14px',
+          fontSize: '1.1rem',
           textTransform: 'uppercase',
           borderRadius: '4px',
           border: `1px solid ${theme.palette.primary.main}`,

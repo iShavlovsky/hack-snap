@@ -46,7 +46,7 @@ export const Header = ({
   return (
     <HeaderWrapper>
       <LogoWrapper>
-        <SnapLogo color={theme.colors.icon?.default} size={35} />
+        <SnapLogo color={theme.colors.icon?.default} size={40} />
         <Title>Degen Watch</Title>
       </LogoWrapper>
       <RightContainer>

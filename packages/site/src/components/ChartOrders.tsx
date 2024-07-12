@@ -2,6 +2,7 @@ import type { GridColDef } from '@mui/x-data-grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
+import styled from 'styled-components';
 
 type Row = {
   id: number;
@@ -17,7 +18,7 @@ type Row = {
 };
 
 const BigRow = 160;
-const SmallRow = 120;
+const SmallRow = 140;
 
 const columns: GridColDef[] = [
   { field: 'date', headerName: 'Date', width: SmallRow },
@@ -132,11 +133,27 @@ export default function chartOrders() {
         pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{
-          '& .MuiDataGrid-columnHeaders': {
-            fontSize: '1.7rem', // Размер шрифта заголовков колонок
+          '& .MuiDataGrid-columnHeaderCheckbox, .MuiDataGrid-cellCheckbox': {
+            display: 'none', // Размер шрифта ячеек данных
           },
+          '& .MuiSvgIcon-root': {
+            fontSize: '2rem', // Размер шрифта ячеек данных
+          },
+
+          '& .MuiButtonBase-root': {
+            padding: '1rem', // Размер шрифта ячеек данных
+          },
+
           '& .MuiDataGrid-cell': {
             fontSize: '1.7rem', // Размер шрифта ячеек данных
+          },
+          '& .MuiSelect-select': {
+            fontSize: '1.7rem',
+            lineHeight: '160%', // Размер шрифта ячеек данных
+          },
+          '& .MuiTablePagination-actions': {
+            display: 'flex',
+            gap: '.5rem', // Размер шрифта ячеек данных
           },
         }}
       />
