@@ -1,6 +1,5 @@
-import type { LoadingButtonProps, LoadingButtonTypeMap } from '@mui/lab';
+import type { LoadingButtonProps } from '@mui/lab';
 import { LoadingButton } from '@mui/lab';
-import type { ExtendButton } from '@mui/material';
 import { Button } from '@mui/material';
 import styled from 'styled-components';
 

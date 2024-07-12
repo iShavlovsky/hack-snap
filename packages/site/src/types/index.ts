@@ -1,7 +1,7 @@
 export { type GetSnapsResponse, type Snap } from './snap';
 
-export type OptionType<T> = {
+export type OptionType<Type> = {
   label: string;
-  value: T;
+  value: Type;
   fixedNumber?: number;
 };

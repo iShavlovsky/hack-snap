@@ -1,5 +1,5 @@
 import type { RequestArguments } from '@metamask/providers';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import { useMetaMaskContext } from './MetamaskContext';
 

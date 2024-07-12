@@ -1,13 +1,13 @@
-import type { OptionType } from '../packages/site/src/types';
+import type { OptionType } from 'site/src/types';
 
 type ResponseType = {
   [key: string]: any;
 };
 
-const getValueFromPath = <T extends string>(
+const getValueFromPath = <Type extends string>(
   object: ResponseType,
-  path: T,
-): any => {
+  path: Type,
+) => {
   return path
     .split('.')
     .reduce(
@@ -16,16 +16,16 @@ const getValueFromPath = <T extends string>(
     );
 };
 
-export const extractValues = <T>(
+export const extractValues = <Type>(
   response: ResponseType,
-  whatToFarm: OptionType<T>[],
+  whatToFarm: OptionType<Type>[],
 ): OptionType<any>[] => {
   return whatToFarm
-    .map((item: OptionType<T>) => {
-      const value = getValueFromPath(response, item.value as string);
+    .map((item: OptionType<Type>) => {
+      const value = getValueFromPath(response, item.value as unknown as string);
       return {
         label: item.label,
-        value: value !== null ? value : undefined,
+        value: value === null ? undefined : value,
         ...(item.fixedNumber && { fixedNumber: item.fixedNumber }),
       };
     })

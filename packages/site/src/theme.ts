@@ -1,6 +1,6 @@
-import type { Theme } from '@mui/material';
+import type { ThemeOptions } from '@mui/material/styles/createTheme';
 
-export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
+export const getDesignTokens = (mode: 'light' | 'dark'): ThemeOptions => ({
   palette: {
     mode,
     ...(mode === 'light'
@@ -40,7 +40,7 @@ export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
   components: {
     MuiButton: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: () => ({
           position: 'relative',
           overflow: 'hidden',
           padding: '10px 20px',

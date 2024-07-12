@@ -6,6 +6,7 @@ const WrapperChart = styled.div`
   aspect-ratio: 16 / 9;
   margin: -1px;
 `;
+
 /**
  *
  */

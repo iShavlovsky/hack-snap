@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import type { UpdateRequestParams } from '../../../../types/requests';
-import { getLocalStorage, setLocalStorage } from '../utils/localStorage';
+import { getLocalStorage, setLocalStorage } from '../utils';
 
 type StateParamsType = {
   whatToFarm: UpdateRequestParams;

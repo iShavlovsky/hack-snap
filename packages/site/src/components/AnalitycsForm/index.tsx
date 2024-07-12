@@ -25,18 +25,17 @@ const FormWrapper = styled.div`
     padding: 1.6rem;
   }
 `;
-type CardProps<T> = {
+type CardProps<Type> = {
   content: {
     title?: string;
   };
-  selectedValues: T[];
-  data: OptionType<T>[];
-  onChange: (val: T) => void;
+  selectedValues: Type[];
+  data: OptionType<Type>[];
+  onChange: (val: Type) => void;
 };
 
 const Title = styled.h3`
   font-size: ${({ theme }) => theme.fontSizes.large};
-  margin: 0;
   margin-bottom: 0.3rem;
 
   ${({ theme }) => theme.mediaQueries.small} {
@@ -49,12 +48,12 @@ const CheckboxLabelSize = 18;
 const CheckboxLabelMb = 4;
 const CheckboxLabelPosition = 'end';
 
-export const AnalyticsForm = <T,>({
+export const AnalyticsForm = <Type,>({
   content,
   data,
   selectedValues,
   onChange,
-}: CardProps<T>) => {
+}: CardProps<Type>) => {
   const { title } = content;
   return (
     <FormWrapper>
