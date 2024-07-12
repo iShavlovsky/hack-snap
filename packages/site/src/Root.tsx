@@ -9,6 +9,7 @@ import { ThemeProvider } from 'styled-components';
 import { dark, light } from './config/theme';
 import { StateProvider } from './contexts/StateContext';
 import { MetaMaskProvider } from './hooks';
+import { getDesignTokens } from './theme';
 import { getThemePreference, setLocalStorage } from './utils';
 
 export type RootProps = {
@@ -30,12 +31,7 @@ export const Root: FunctionComponent<RootProps> = ({ children }) => {
   };
 
   const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: darkTheme ? 'dark' : 'light',
-        },
-      }),
+    () => createTheme(getDesignTokens(darkTheme ? 'dark' : 'light')),
     [darkTheme],
   );
 

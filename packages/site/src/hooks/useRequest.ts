@@ -1,4 +1,5 @@
 import type { RequestArguments } from '@metamask/providers';
+import { useCallback, useState } from 'react';
 
 import { useMetaMaskContext } from './MetamaskContext';
 
@@ -9,9 +10,15 @@ export type Request = (params: RequestArguments) => Promise<unknown | null>;
  *
  * @returns The `request` function.
  */
-export const useRequest = () => {
-  const { provider, setError } = useMetaMaskContext();
+type UseRequestReturnType = [
+  Request,
+  { isLoading: boolean; error: Error | null },
+];
 
+export const useRequest = (): UseRequestReturnType => {
+  const { provider, setError: setMetamaskError } = useMetaMaskContext();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
   /**
    * `provider.request` wrapper.
    *
@@ -21,6 +28,7 @@ export const useRequest = () => {
    * @returns The result of the request.
    */
   const request: Request = async ({ method, params }) => {
+    setIsLoading(true);
     try {
       const data =
         (await provider?.request({
@@ -28,13 +36,16 @@ export const useRequest = () => {
           params,
         } as RequestArguments)) ?? null;
 
+      setIsLoading(false);
+      error && setError(null);
       return data;
     } catch (requestError: any) {
+      setMetamaskError(requestError);
+      setIsLoading(false);
       setError(requestError);
-
       return null;
     }
   };
 
-  return request;
+  return [request, { isLoading, error }];
 };

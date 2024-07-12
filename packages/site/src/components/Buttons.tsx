@@ -108,7 +108,7 @@ export const SendButton = (props: ComponentProps<typeof Button>) => {
 };
 
 export const HeaderButtons = () => {
-  const requestSnap = useRequestSnap();
+  const [requestSnap] = useRequestSnap();
   const { isFlask, installedSnap } = useMetaMask();
 
   if (!isFlask && !installedSnap) {

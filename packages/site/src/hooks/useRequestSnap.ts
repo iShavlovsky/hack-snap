@@ -15,9 +15,8 @@ export const useRequestSnap = (
   snapId = defaultSnapOrigin,
   version?: string,
 ) => {
-  const request = useRequest();
+  const [request, { error, isLoading }] = useRequest();
   const { setInstalledSnap } = useMetaMaskContext();
-
   /**
    * Request the Snap.
    */
@@ -28,10 +27,10 @@ export const useRequestSnap = (
         [snapId]: version ? { version } : {},
       },
     })) as Record<string, Snap>;
-
-    // Updates the `installedSnap` context variable since we just installed the Snap.
+    console.log(snaps);
     setInstalledSnap(snaps?.[snapId] ?? null);
+    // Updates the `installedSnap` context variable since we just installed the Snap.
   };
 
-  return requestSnap;
+  return [requestSnap, { error, isLoading }];
 };

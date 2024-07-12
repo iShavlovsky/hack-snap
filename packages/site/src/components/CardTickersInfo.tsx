@@ -1,16 +1,16 @@
 import { Divider } from '@mui/material';
+import React from 'react';
 import styled from 'styled-components';
 
-import { mock } from './mock-api';
+import type { OptionType } from '../types';
 
-const analytics = mock;
-
-type CardTickersInfoProps = {
+type CardTickersInfoProps<T> = {
   content: {
     title?: string;
   };
   disabled?: boolean;
   fullWidth?: boolean;
+  data: OptionType<T>[];
 };
 
 const CardTickersInfoWrapep = styled.div<{
@@ -48,43 +48,29 @@ const Description = styled.div`
   margin-top: 1rem;
 `;
 
-export const CardTickersInfo = ({
+export const CardTickersInfo = <T,>({
   content,
   disabled = false,
   fullWidth,
-}: CardTickersInfoProps) => {
+  data,
+}: CardTickersInfoProps<T>) => {
   const { title } = content;
   return (
     <CardTickersInfoWrapep fullWidth={fullWidth} disabled={disabled}>
       {title && <Title>{title}</Title>}
-      <Description>Token: {analytics.pairInfo.ticker}</Description>
-      <Divider />
-      <Description>Liquidity: $ {analytics.liquidity.toFixed(2)}</Description>
-      <Divider />
-      <Description>Market Cap: $ {analytics.marketCap.toFixed(2)}</Description>
-      <Divider />
-      <Description>Price: $ {analytics.price.toFixed(2)}</Description>
-      <Divider />
-      <Description>
-        Price Change (24H): {analytics.pricePercentCount.h24.toFixed(2)}%
-      </Description>
-      <Divider />
-      <Description>
-        DEX Transactions (24H): {analytics.txsCount.h24}
-      </Description>
-      <Divider />
-      <Description>Buys (24H): {analytics.txsBuysCount.h24}</Description>
-      <Divider />
-      <Description>Sells (24H): {analytics.txsSellsCount.h24}</Description>
-      <Divider />
-      <Description>
-        Volume (24H): $ {analytics.volumeCount.h24.toFixed(2)}
-      </Description>
-      <Divider />
-      <Description>DEX: {analytics.dex.name}</Description>
-      <Divider />
-      <Description>Network: {analytics.network.name}</Description>
-      <Divider />
+      {data.map(({ label }, index) => (
+        <React.Fragment key={index}>
+          <Description>
+            {label}: {index}
+          </Description>
+          {index !== data.length - 1 && <Divider />}
+        </React.Fragment>
+      ))}
+      {!data.length && (
+        <Description>
+          Select one of the filters to display analytics
+        </Description>
+      )}
     </CardTickersInfoWrapep>
   );
 };

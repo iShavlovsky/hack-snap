@@ -11,7 +11,7 @@ import { useRequest } from './useRequest';
  */
 export const useMetaMask = () => {
   const { provider, setInstalledSnap, installedSnap } = useMetaMaskContext();
-  const request = useRequest();
+  const [request] = useRequest();
 
   const [isFlask, setIsFlask] = useState(false);
 

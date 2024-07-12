@@ -13,8 +13,16 @@ export type InvokeSnapParams = {
  * config.
  * @returns The invokeSnap wrapper method.
  */
-export const useInvokeSnap = (snapId = defaultSnapOrigin) => {
-  const request = useRequest();
+
+type UseInvokeReturnType = [
+  (params: InvokeSnapParams) => void,
+  { isLoading: boolean; error: Error | null },
+];
+
+export const useInvokeSnap = (
+  snapId = defaultSnapOrigin,
+): UseInvokeReturnType => {
+  const [request, { error, isLoading }] = useRequest();
 
   /**
    * Invoke the requested Snap method.
@@ -25,7 +33,7 @@ export const useInvokeSnap = (snapId = defaultSnapOrigin) => {
    * @returns The Snap response.
    */
   const invokeSnap = async ({ method, params }: InvokeSnapParams) =>
-    request({
+    await request({
       method: 'wallet_invokeSnap',
       params: {
         snapId,
@@ -33,5 +41,5 @@ export const useInvokeSnap = (snapId = defaultSnapOrigin) => {
       },
     });
 
-  return invokeSnap;
+  return [invokeSnap, { error, isLoading }];
 };

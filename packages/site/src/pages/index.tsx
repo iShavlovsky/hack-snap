@@ -1,7 +1,8 @@
 import { LoadingButton } from '@mui/lab';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
+import { whatToFarm } from '../../../../mock/filterParamsData';
 import { RequestEnum } from '../../../../types/requests';
 import {
   ConnectButton,
@@ -23,18 +24,17 @@ import {
   useRequestSnap,
 } from '../hooks';
 import { isLocalSnap, shouldDisplayReconnectButton } from '../utils';
-import { whatToFarm, birdEye, dexScreneer } from './mockFiltersData';
+import { birdEye, dexScreneer } from './mockFiltersData';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-top: 7.6rem;
+
   margin-bottom: 7.6rem;
   ${({ theme }) => theme.mediaQueries.small} {
     padding-left: 2.4rem;
     padding-right: 2.4rem;
-    margin-top: 2rem;
     margin-bottom: 2rem;
     width: auto;
   }
@@ -67,27 +67,6 @@ const ContainerRow = styled.div`
   margin-bottom: 4rem;
   gap: 2rem;
   padding: 0 5rem;
-`;
-
-const Heading = styled.h1`
-  margin-top: 0;
-  margin-bottom: 2.4rem;
-  text-align: center;
-`;
-
-const Span = styled.span`
-  color: ${(props) => props.theme.colors.primary?.default};
-`;
-
-const Subtitle = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.large};
-  font-weight: 500;
-  margin-top: 0;
-  margin-bottom: 0;
-  text-align: center;
-  ${({ theme }) => theme.mediaQueries.small} {
-    font-size: ${({ theme }) => theme.fontSizes.text};
-  }
 `;
 
 const CardContainer = styled.div`
@@ -135,47 +114,19 @@ const ErrorMessage = styled.div`
   }
 `;
 
-// /**
-//  *
-//  */
-// function Chart() {
-//   return null;
-// }
-//
-// /**
-//  *
-//  */
-// function Deposits() {
-//   return null;
-// }
-//
-// /**
-//  *
-//  */
-// function Orders() {
-//   return null;
-// }
-//
-// /**
-//  *
-//  * @param props
-//  * @param props.sx
-//  * @param props.sx.pt
-//  */
-// function Copyright(props: { sx: { pt: number } }) {
-//   return null;
-// }
-
 const Index = () => {
-  const [loadingState, setLoadingState] = useState({
-    sendParams: false,
-    clearParams: false,
-  });
-
   const { error } = useMetaMaskContext();
   const { isFlask, snapsDetected, installedSnap } = useMetaMask();
-  const requestSnap = useRequestSnap();
-  const invokeSnap = useInvokeSnap();
+  const [requestSnap] = useRequestSnap();
+  const [
+    resetSnapParams,
+    {
+      isLoading: isLoadingResetSnapParams,
+      // error: errorResetSnapParams,
+    },
+  ] = useInvokeSnap();
+  const [updateSnapParams, { isLoading: isLoadingUpdateSnapParams }] =
+    useInvokeSnap();
 
   const { params, handleParams, resetStore } = useStateContext();
 
@@ -191,65 +142,38 @@ const Index = () => {
     [params.whatToFarm],
   );
 
+  const tokenAnalitycsWhtfByParams = useMemo(
+    () =>
+      whatToFarm.filter((item) =>
+        whatToFarmSelectedParams.includes(item.value),
+      ),
+    [whatToFarmSelectedParams],
+  );
+
   const isMetaMaskReady = isLocalSnap(defaultSnapOrigin)
     ? isFlask
     : snapsDetected;
 
-  const resetStoreParams = async () => {
-    setLoadingState((prevState) => ({
-      ...prevState,
-      clearParams: true,
-    }));
-    try {
-      await invokeSnap({
-        method: RequestEnum.RemoveParams,
-      });
-      resetStore();
-      setLoadingState((prevState) => ({
-        ...prevState,
-        clearParams: false,
-      }));
-    } catch (err) {
-      setLoadingState((prevState) => ({
-        ...prevState,
-        clearParams: false,
-      }));
-    }
+  const onResetParams = async () => {
+    await resetSnapParams({
+      method: RequestEnum.RemoveParams,
+    });
+    resetStore();
   };
 
-  const sendParamsToStore = useCallback(async () => {
-    setLoadingState((prevState) => ({ ...prevState, sendParams: true }));
-    try {
-      await invokeSnap({
-        method: RequestEnum.UpdateParams,
-        params: {
-          fields: params.whatToFarm,
-        },
-      });
-      setLoadingState((prevState) => ({
-        ...prevState,
-        sendParams: false,
-      }));
-    } catch (err) {
-      console.log(err);
-      setLoadingState((prevState) => ({
-        ...prevState,
-        sendParams: false,
-      }));
-    }
+  const onSendParams = useCallback(async () => {
+    await updateSnapParams({
+      method: RequestEnum.UpdateParams,
+      params: {
+        fields: params.whatToFarm,
+      },
+    });
   }, [params.whatToFarm]);
 
   return (
     <Container>
-      <Heading>
-        Welcome to <Span>WTF Analytics</Span>
-      </Heading>
-      <Subtitle>
-        Get started by <code>https://whattofarm.io</code>
-      </Subtitle>
       <ContainerRow>
         <Wrapper>
-          {/* todo: form 1 WhatToFarm*/}
           <AnalyticsForm
             content={{
               title: 'WhatToFarm',
@@ -258,8 +182,6 @@ const Index = () => {
             selectedValues={whatToFarmSelectedParams}
             onChange={(val) => handleParams('whatToFarm', val)}
           />
-
-          {/* todo: form 2 WhatToFarm*/}
           <AnalyticsForm
             selectedValues={dexScreneerSelectedParams}
             data={dexScreneer}
@@ -268,8 +190,6 @@ const Index = () => {
               title: 'DexScreneer',
             }}
           />
-
-          {/* todo: form 3 WhatToFarm*/}
           <AnalyticsForm
             selectedValues={birdEyeSelectedParams}
             data={birdEye}
@@ -283,21 +203,19 @@ const Index = () => {
             <LoadingButton
               size="large"
               variant="outlined"
-              onClick={resetStoreParams}
-              loading={loadingState.clearParams}
+              onClick={onResetParams}
+              loading={isLoadingResetSnapParams}
             >
               <span>Clear</span>
             </LoadingButton>
             <LoadingButton
               size="large"
               variant="contained"
-              onClick={sendParamsToStore}
-              loading={loadingState.sendParams}
+              onClick={onSendParams}
+              loading={isLoadingUpdateSnapParams}
             >
               <span>Send Analitycs</span>
             </LoadingButton>
-            {/* <ClearButton onClick={resetStoreParams} disabled={!installedSnap} /> */}
-            {/* <SendButton onClick={sendParamsToStore} disabled={!installedSnap} /> */}
           </WrapperRow>
         </Wrapper>
         <WrapperChart>
@@ -323,6 +241,7 @@ const Index = () => {
           )}
           {/* todo: Card Tickers Info*/}
           <CardTickersInfo
+            data={tokenAnalitycsWhtfByParams}
             content={{
               title: 'Token Analytics',
             }}

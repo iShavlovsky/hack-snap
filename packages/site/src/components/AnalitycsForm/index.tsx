@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import styled from 'styled-components';
 
-import type { OptionType } from './types';
+import type { OptionType } from '../../types';
 
 type CardProps<T> = {
   content: {

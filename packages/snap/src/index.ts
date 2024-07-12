@@ -1,12 +1,13 @@
 import type {
   OnTransactionHandler,
   OnRpcRequestHandler,
+  OnInstallHandler,
 } from '@metamask/snaps-sdk';
 import { heading, panel, text, divider } from '@metamask/snaps-sdk';
 
+import { whatToFarm } from '../../../mock/filterParamsData';
 import type { UpdateRequestParams } from '../../../types/requests';
 import { RequestEnum } from '../../../types/requests';
-import { mock } from './mock-api';
 
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   const tokenAddress = transaction.to; // адрес токена
@@ -53,35 +54,29 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
       console.error('There was a problem with the fetch operation:', error);
     });
 
-  const analytics = mock;
-
-  const persistedData = await snap.request({
+  const persistedData = (await snap.request({
     method: 'snap_manageState',
     params: {
       operation: 'get',
       encrypted: false,
     },
-  });
+  })) as { store: { fields: UpdateRequestParams } };
+
+  const filteredData = persistedData?.store.fields
+    ? whatToFarm.filter((item) =>
+        persistedData.store.fields.includes(item.value),
+      )
+    : [];
 
   return {
     content: panel([
       heading('Token Analytics'),
-      text(`post1: ${post1.title}`),
-      divider(),
       text(`tokenAddress: ${tokenAddress}`),
       text(`amount: ${amount}`),
       divider(),
-      text(`State data: ${JSON.stringify(persistedData)}`),
-      text(`Liquidity: $${analytics.liquidity.toFixed(2)}`),
-      text(`Market Cap: $${analytics.marketCap.toFixed(2)}`),
-      text(`Price: $${analytics.price.toFixed(2)}`),
-      text(`Price Change (24H): ${analytics.pricePercentCount.h24}%`),
-      text(`DEX Transactions (24H): ${analytics.txsCount.h24}`),
-      text(`Buys (24H): ${analytics.txsBuysCount.h24}`),
-      text(`Sells (24H): ${analytics.txsSellsCount.h24}`),
-      text(`Volume (24H): $${analytics.volumeCount.h24.toFixed(2)}`),
-      text(`DEX: ${analytics.dex.name}`),
-      text(`Network: ${analytics.network.name}`),
+      ...filteredData
+        .map(({ label }, index) => [text(`${label} ${index}`), divider()])
+        .flat(),
     ]),
   };
 };
@@ -108,4 +103,19 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     default:
       throw new Error('Method not found.');
   }
+};
+
+export const onInstall: OnInstallHandler = async () => {
+  await snap.request({
+    method: 'snap_dialog',
+    params: {
+      type: 'alert',
+      content: panel([
+        heading('Thank you for installing Degen Watch snap'),
+        text(
+          'To use this Snap, visit the companion dapp at [metamask.io](https://metamask.io).',
+        ),
+      ]),
+    },
+  });
 };
