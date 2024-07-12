@@ -19,7 +19,6 @@ const CardTickersInfoWrapep = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : '250px')};
   background-color: ${({ theme }) => theme.colors.card?.default};
   margin-bottom: 2.4rem;
   padding: 2.4rem;

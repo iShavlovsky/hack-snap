@@ -14,7 +14,9 @@ import {
 import { AnalyticsForm } from '../components/AnalitycsForm';
 import { CardTickersInfo } from '../components/CardTickersInfo';
 import { ChartIndicators } from '../components/ChartIndicators';
-import { ChartOrders } from '../components/ChartOrders';
+import ChartMaterial from '../components/ChartMaterial';
+import ChartOrders from '../components/ChartOrders';
+import GreedIndex from '../components/GreedIndex';
 import { defaultSnapOrigin } from '../config';
 import { useStateContext } from '../contexts/StateContext';
 import {
@@ -29,8 +31,9 @@ import { birdEye, dexScreneer } from './mockFiltersData';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   flex: 1;
-
+  margin-top: 2rem;
   margin-bottom: 7.6rem;
   ${({ theme }) => theme.mediaQueries.small} {
     padding-left: 2.4rem;
@@ -48,7 +51,7 @@ const Wrapper = styled.div`
 const WrapperChart = styled.div`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  max-width: 70%;
 `;
 
 const WrapperRow = styled.div`
@@ -75,7 +78,7 @@ const CardContainer = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   max-width: 30rem;
-  width: 100%;
+  min-width: 350px;
   height: 100%;
 `;
 
@@ -222,15 +225,13 @@ const Index = () => {
           {/* todo: Chart Indicators*/}
           <ChartIndicators
             content={{
-              title: 'ETH/USDC',
+              title: '',
             }}
           />
+          {/* todo: Chart Indicators*/}
+          <ChartMaterial />
           {/* todo: Chart Orders*/}
-          <ChartOrders
-            content={{
-              title: 'Price Chart',
-            }}
-          />
+          <ChartOrders />
         </WrapperChart>
 
         <CardContainer>
@@ -246,7 +247,7 @@ const Index = () => {
               title: 'Token Analytics',
             }}
           />
-
+          <GreedIndex />
           {!isMetaMaskReady && (
             <Card
               content={{
@@ -255,7 +256,6 @@ const Index = () => {
                   'Snaps is pre-release software only available in MetaMask Flask, a canary distribution for developers with access to upcoming features.',
                 button: <InstallFlaskButton />,
               }}
-              fullWidth
             />
           )}
           {!installedSnap && (
@@ -303,11 +303,6 @@ const Index = () => {
               ),
             }}
             disabled={!installedSnap}
-            fullWidth={
-              isMetaMaskReady &&
-              Boolean(installedSnap) &&
-              !shouldDisplayReconnectButton(installedSnap)
-            }
           />
           <Notice>
             <p>

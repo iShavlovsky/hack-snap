@@ -31,6 +31,8 @@
     "@metamask/providers": "^16.0.0",
     "@mui/lab": "^5.0.0-alpha.171",
     "@mui/material": "^5.16.0",
+    "@mui/x-charts": "^7.10.0",
+    "@mui/x-data-grid": "^7.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
