@@ -1,5 +1,4 @@
 import { LoadingButton } from '@mui/lab';
-import { scopedCssBaselineClasses } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
@@ -22,7 +21,6 @@ import {
   useRequestSnap,
 } from '../hooks';
 import { isLocalSnap, shouldDisplayReconnectButton } from '../utils';
-import { birdEye, dexScreneer } from './mockFiltersData';
 
 const Container = styled.div`
   display: flex;
@@ -161,11 +159,12 @@ const Index = () => {
     });
   }, [params.whatToFarm]);
 
-  const [isNoticeVisible, setNoticeVisible] = useState<boolean>(true);
+  const [isNoticeVisible, setNoticeVisible] = useState<boolean>(false); // Установить начальное значение в false
 
   const toggleNotice = (visible: boolean) => {
     setNoticeVisible(visible);
   };
+
   return (
     <Container>
       <ContainerRow>
@@ -185,6 +184,7 @@ const Index = () => {
               title: 'DexScreneer',
             }}
             showSecurityCheck={true}
+            toggleNotice={toggleNotice}
           />
           <AnalyticsFormSimple
             content={{
@@ -251,8 +251,8 @@ const Index = () => {
                   {
                     id: 'panel1',
                     summary: 'Go+ Security',
-                    subSummary: 'I am an accordion',
-                    details: 'Stay tuned for updates and further releases :)',
+                    subSummary: '2 issues',
+                    details: 'Stay tuned for updates and further releases.',
                     icon: (
                       <span style={{ color: 'currentcolor' }}>
                         <svg
@@ -276,7 +276,7 @@ const Index = () => {
                     id: 'panel2',
                     summary: 'Quick Intel',
                     subSummary: 'No issues',
-                    details: 'Stay tuned for updates and further releases :)',
+                    details: 'Stay tuned for updates and further releases.',
                     icon: (
                       <span style={{ color: 'currentcolor' }}>
                         <svg
@@ -307,7 +307,7 @@ const Index = () => {
                     id: 'panel3',
                     summary: 'Token Sniffer',
                     subSummary: '100/100',
-                    details: 'Stay tuned for updates and further releases :)',
+                    details: 'Stay tuned for updates and further releases.',
                     icon: (
                       <span style={{ color: 'currentcolor' }}>
                         <svg

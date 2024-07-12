@@ -59,10 +59,12 @@ const PopupBody = styled('div')`
   width: max-content;
   padding: 1.5rem;
   margin: 1rem;
+  text-align: center;
+  line-height: 150%;
+  color: ${({ theme }) => theme.colors.text?.default};
   border-radius: 0.5em;
   border: 1px solid ${({ theme }) => theme.colors.border?.default};
-  background-color: ${({ theme }) =>
-    theme.colors.card?.default ? grey[900] : '#fff'};
+  background-color: ${({ theme }) => theme.colors.card?.default};
   box-shadow: ${({ theme }) =>
     theme.shadows.default === 'dark'
       ? '0px 4px 8px rgb(0 0 0 / 0.7)'
@@ -114,10 +116,9 @@ export const AnalyticsFormSimple = ({
   const handleSecurityCheckChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const isChecked = event.target.checked;
-    setSecurityCheck(isChecked);
+    setSecurityCheck(event.target.checked);
     if (toggleNotice) {
-      toggleNotice(isChecked);
+      toggleNotice(event.target.checked);
     }
   };
 
@@ -148,7 +149,13 @@ export const AnalyticsFormSimple = ({
                 open={Boolean(anchorEls[item.label])}
                 anchor={anchorEls[item.label] as HTMLElement}
               >
-                <PopupBody>The content of the {item.label} Popup.</PopupBody>
+                <PopupBody>
+                  Stay tuned for updates and further releases. <br />
+                  <span style={{ fontWeight: 'bold' }}>{item.label}</span>{' '}
+                  <span style={{ color: '#FF523A', fontWeight: 'bold' }}>
+                    coming soon
+                  </span>
+                </PopupBody>
               </BasePopup>
             </CheckboxLabel>
           ))}
