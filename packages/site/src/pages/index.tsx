@@ -1,9 +1,13 @@
 import { LoadingButton } from '@mui/lab';
-import { useCallback, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { whatToFarm } from '../../../../mock/filterParamsData';
-import { RequestEnum } from '../../../../types/requests';
+import { SnapRequestEnum } from '../../../../types/requests';
+import { extractValues } from '../../../../utils/helper';
+import { QueryKeys } from '../api/queryKeys';
+import ApiService from '../api/service';
 import {
   ConnectButton,
   InstallFlaskButton,
@@ -121,13 +125,8 @@ const Index = () => {
   const { error } = useMetaMaskContext();
   const { isFlask, snapsDetected, installedSnap } = useMetaMask();
   const [requestSnap] = useRequestSnap();
-  const [
-    resetSnapParams,
-    {
-      isLoading: isLoadingResetSnapParams,
-      // error: errorResetSnapParams,
-    },
-  ] = useInvokeSnap();
+  const [resetSnapParams, { isLoading: isLoadingResetSnapParams }] =
+    useInvokeSnap();
   const [updateSnapParams, { isLoading: isLoadingUpdateSnapParams }] =
     useInvokeSnap();
 
@@ -146,11 +145,23 @@ const Index = () => {
   );
 
   const tokenAnalitycsWhtfByParams = useMemo(
-    () =>
-      whatToFarm.filter((item) =>
-        whatToFarmSelectedParams.includes(item.value),
-      ),
-    [whatToFarmSelectedParams],
+    () => whatToFarm.filter((item) => params.whatToFarm.includes(item.value)),
+    [params.whatToFarm],
+  );
+
+  const { data, isPending } = useQuery({
+    queryKey: [QueryKeys.ChartPairHistory],
+    queryFn: async () =>
+      await ApiService.fetchPairData({
+        inv: false,
+        slug: '0x3Cb104f044dB23d6513F2A6100a1997Fa5e3F587',
+      }),
+    refetchInterval: 30000,
+  });
+
+  const analitycsData = useMemo(
+    () => (data ? extractValues(data, tokenAnalitycsWhtfByParams) : []),
+    [tokenAnalitycsWhtfByParams, data],
   );
 
   const isMetaMaskReady = isLocalSnap(defaultSnapOrigin)
@@ -159,14 +170,14 @@ const Index = () => {
 
   const onResetParams = async () => {
     await resetSnapParams({
-      method: RequestEnum.RemoveParams,
+      method: SnapRequestEnum.RemoveParams,
     });
     resetStore();
   };
 
   const onSendParams = useCallback(async () => {
     await updateSnapParams({
-      method: RequestEnum.UpdateParams,
+      method: SnapRequestEnum.UpdateParams,
       params: {
         fields: params.whatToFarm,
       },
@@ -241,12 +252,15 @@ const Index = () => {
             </ErrorMessage>
           )}
           {/* todo: Card Tickers Info*/}
+
           <CardTickersInfo
-            data={tokenAnalitycsWhtfByParams}
+            data={analitycsData}
+            isPending={isPending}
             content={{
               title: 'Token Analytics',
             }}
           />
+
           <GreedIndex />
           {!isMetaMaskReady && (
             <Card

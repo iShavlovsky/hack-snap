@@ -1,4 +1,4 @@
-export enum RequestEnum {
+export enum SnapRequestEnum {
   UpdateParams = 'update_params',
   RemoveParams = 'remove_params',
 }

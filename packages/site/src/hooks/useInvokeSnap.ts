@@ -15,7 +15,7 @@ export type InvokeSnapParams = {
  */
 
 type UseInvokeReturnType = [
-  (params: InvokeSnapParams) => void,
+  (params: InvokeSnapParams) => Promise<void>,
   { isLoading: boolean; error: Error | null },
 ];
 

@@ -131,3 +131,5 @@ export const mock = {
     title: 'Linea',
   },
 };
+
+export type PairResponseType = typeof mock;

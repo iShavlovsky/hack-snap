@@ -10,7 +10,8 @@ type CardTickersInfoProps<T> = {
   };
   disabled?: boolean;
   fullWidth?: boolean;
-  data: OptionType<T>[];
+  data?: OptionType<T>[] | undefined;
+  isPending?: boolean;
 };
 
 const CardTickersInfoWrapep = styled.div<{
@@ -47,25 +48,33 @@ const Description = styled.div`
   margin-top: 1rem;
 `;
 
-export const CardTickersInfo = <T,>({
+export const CardTickersInfo = <T extends string>({
   content,
   disabled = false,
   fullWidth,
   data,
+  isPending,
 }: CardTickersInfoProps<T>) => {
   const { title } = content;
   return (
     <CardTickersInfoWrapep fullWidth={fullWidth} disabled={disabled}>
       {title && <Title>{title}</Title>}
-      {data.map(({ label }, index) => (
-        <React.Fragment key={index}>
-          <Description>
-            {label}: {index}
-          </Description>
-          {index !== data.length - 1 && <Divider />}
-        </React.Fragment>
-      ))}
-      {!data.length && (
+      {isPending ? (
+        <Description>Loading...</Description>
+      ) : (
+        !isPending &&
+        data &&
+        data.map(({ label, value, fixedNumber }, index) => (
+          <React.Fragment key={index}>
+            <Description>
+              {label}:{' '}
+              {fixedNumber ? parseFloat(value).toFixed(fixedNumber) : value}
+            </Description>
+            {index !== data.length - 1 && <Divider />}
+          </React.Fragment>
+        ))
+      )}
+      {!data?.length && (
         <Description>
           Select one of the filters to display analytics
         </Description>

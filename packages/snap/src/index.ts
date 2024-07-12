@@ -7,18 +7,17 @@ import type {
 import { image, heading, panel, text, divider } from '@metamask/snaps-sdk';
 
 import { whatToFarm } from '../../../mock/filterParamsData';
+import type { PairResponseType } from '../../../mock/mockApi';
 import type { UpdateRequestParams } from '../../../types/requests';
-import { RequestEnum } from '../../../types/requests';
+import { SnapRequestEnum } from '../../../types/requests';
+import { extractValues } from '../../../utils/helper';
 
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   const tokenAddress = transaction.to; // адрес токена
   const amount = transaction.value; // количество токенов
 
   // const response = await fetch('https://yourapi.com/token-analytics', {
-  //   method: 'GET',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
+
   //   body: JSON.stringify({
   //     tokenAddress,
   //     amount,
@@ -26,34 +25,25 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   // });
   //
   // const analytics = await response.json();
-  let post1 = {
-    id: 0,
-    slug: '',
-    url: '',
-    title: '',
-    content: '',
-    image: '',
-    thumbnail: '',
-    status: '',
-    category: '',
-    publishedAt: '',
-    updatedAt: '',
-    userId: 0,
-  };
-  await fetch('https://jsonplaceholder.org/posts/1')
+  let err = '';
+  const pairData = (await fetch(
+    'https://whattofarm.io/api/v3/open/pair-stat/0x3Cb104f044dB23d6513F2A6100a1997Fa5e3F587?inv=false&route=01',
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  )
     .then(async (response) => {
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        err = 'Network error';
       }
       return response.json();
     })
-    .then((post) => {
-      post1 = post;
-      console.log(post);
-    })
-    .catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
+    .catch(() => {
+      err = 'Network error';
+    })) as PairResponseType;
 
   const persistedData = (await snap.request({
     method: 'snap_manageState',
@@ -69,22 +59,35 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
       )
     : [];
 
+  const values = extractValues(pairData, filteredData);
+
   return {
     content: panel([
-      heading('Token Analytics'),
-      text(`tokenAddress: ${tokenAddress}`),
-      text(`amount: ${amount}`),
-      divider(),
-      ...filteredData
-        .map(({ label }, index) => [text(`${label} ${index}`), divider()])
-        .flat(),
+      ...(err
+        ? [text(`${err}`)]
+        : [
+            heading('Token Analytics'),
+            text(`tokenAddress: ${tokenAddress}`),
+            text(`amount: ${amount}`),
+            divider(),
+            ...values
+              .map(({ label, value, fixedNumber }) => [
+                text(
+                  `${label} ${
+                    fixedNumber ? parseFloat(value).toFixed(fixedNumber) : value
+                  }`,
+                ),
+                divider(),
+              ])
+              .flat(),
+          ]),
     ]),
   };
 };
 
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
-    case RequestEnum.UpdateParams:
+    case SnapRequestEnum.UpdateParams:
       return await snap.request({
         method: 'snap_manageState',
         params: {
@@ -93,7 +96,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           encrypted: false,
         },
       });
-    case RequestEnum.RemoveParams:
+    case SnapRequestEnum.RemoveParams:
       return await snap.request({
         method: 'snap_manageState',
         params: {
