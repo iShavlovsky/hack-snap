@@ -22,7 +22,7 @@ export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
           },
           background: {
             default: '#121212',
-            paper: '#1e1e1e',
+            paper: '#121212',
           },
           text: {
             primary: '#ffffff',
@@ -36,19 +36,20 @@ export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
           position: 'relative',
           overflow: 'hidden',
           padding: '10px 20px',
-          fontSize: '14px',
+          fontSize: '1.1rem',
           textTransform: 'uppercase',
           borderRadius: '4px',
-          border: `1px solid ${theme.palette.primary.main}`,
           transition: 'all 0.4s ease-in-out',
         }),
-        contained: {
+        contained: ({ theme }) => ({
+          border: `1px solid ${theme.palette.primary.main}`,
           boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
           '&:hover': {
             boxShadow: '0 6px 20px rgba(0, 0, 0, 0.3)',
           },
-        },
+        }),
         outlined: ({ theme }) => ({
+          border: `1px solid ${theme.palette.primary.main}`,
           '&:hover': {
             border: `1px solid ${theme.palette.text.primary}`,
             '& span': {
@@ -57,8 +58,12 @@ export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
           },
         }),
         text: {
+          background:
+            'linear-gradient(282.26deg, #0F9A68 10.03%, #007580 91.07%)',
+          color: '#fff',
           '&:hover': {
-            background: 'rgba(255, 255, 255, 0.1)',
+            background:
+              'linear-gradient(282.26deg, #007580 10.03%, #0F9A68 91.07%)',
           },
         },
       },

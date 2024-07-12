@@ -11,10 +11,15 @@ import { useRequest } from './useRequest';
  * @param version - The requested version.
  * @returns The `wallet_requestSnaps` wrapper.
  */
+type UseRequestSnapReturnType = [
+  () => Promise<void>,
+  { isLoading: boolean; error: Error | null },
+];
+
 export const useRequestSnap = (
   snapId = defaultSnapOrigin,
   version?: string,
-) => {
+): UseRequestSnapReturnType => {
   const [request, { error, isLoading }] = useRequest();
   const { setInstalledSnap } = useMetaMaskContext();
   /**

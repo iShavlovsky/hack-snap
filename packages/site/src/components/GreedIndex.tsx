@@ -5,17 +5,14 @@ const GreedIndexWrapper = styled.div`
   height: 38rem;
 
   background-color: ${({ theme }) => theme.colors.card?.default};
-  margin-bottom: 2.4rem;
   border: 1px solid ${({ theme }) => theme.colors.border?.default};
-  border-radius: ${({ theme }) => theme.radii.default};
+  border-radius: 0.5rem;
   overflow: hidden;
   box-shadow: ${({ theme }) => theme.shadows.default};
 
   align-self: stretch;
   ${({ theme }) => theme.mediaQueries.small} {
     width: 100%;
-    margin-top: 1.2rem;
-    margin-bottom: 1.2rem;
     padding: 1.6rem;
   }
 `;

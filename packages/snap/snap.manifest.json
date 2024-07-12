@@ -1,13 +1,13 @@
 {
   "version": "0.1.0",
-  "description": "Degen Watch — is your analytical assistant!",
+  "description": "Your on-chain companion. Customize your on-chain experience with real-time data. Pick a data provider and see token insights at a glance on your MetaMask wallet.",
   "proposedName": "Degen Watch",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/template-snap-monorepo.git"
   },
   "source": {
-    "shasum": "6AYGZKYPujC1MXyMO9I73A7IRQADQ7ct3zPL7SFMXrE=",
+    "shasum": "k0Nq/A/bUkDPA20p86U1IDmhLLKC1owmiBJ7buSd12U=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

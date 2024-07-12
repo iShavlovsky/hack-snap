@@ -28,12 +28,6 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   let err = '';
   const pairData = (await fetch(
     'https://whattofarm.io/api/v3/open/pair-stat/0x3Cb104f044dB23d6513F2A6100a1997Fa5e3F587?inv=false&route=01',
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
   )
     .then(async (response) => {
       if (!response.ok) {
