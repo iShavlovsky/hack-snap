@@ -29,6 +29,14 @@ export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
           },
         }),
   },
+  typography: {
+    body1: {
+      fontSize: '18px',
+    },
+    body2: {
+      fontSize: '1.85rem',
+    },
+  },
   components: {
     MuiButton: {
       styleOverrides: {
@@ -61,6 +69,9 @@ export const getDesignTokens = (mode: 'light' | 'dark'): Theme => ({
           background:
             'linear-gradient(282.26deg, #0F9A68 10.03%, #007580 91.07%)',
           color: '#fff',
+          '& span': {
+            transition: 'color 0.4s ease-in-out',
+          },
           '&:hover': {
             background:
               'linear-gradient(282.26deg, #007580 10.03%, #0F9A68 91.07%)',
