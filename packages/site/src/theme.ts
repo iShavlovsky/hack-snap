@@ -53,7 +53,7 @@ export const getDesignTokens = (
           },
           background: {
             default: '#121212',
-            paper: '#1e1e1e',
+            paper: '#121212',
           },
           text: {
             primary: '#ffffff',
