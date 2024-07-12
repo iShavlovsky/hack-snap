@@ -1,6 +1,6 @@
 import { LoadingButton } from '@mui/lab';
 import { scopedCssBaselineClasses } from '@mui/material';
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { whatToFarm } from '../../../../mock/filterParamsData';
@@ -8,6 +8,7 @@ import { RequestEnum } from '../../../../types/requests';
 import { InstallFlaskButton, Card } from '../components';
 import AccordionMui from '../components/AccordionMui';
 import { AnalyticsForm } from '../components/AnalitycsForm';
+import { AnalyticsFormSimple } from '../components/AnalitycsFormSimple';
 import { CardTickersInfo } from '../components/CardTickersInfo';
 import ChartMaterial from '../components/ChartMaterial';
 import ChartOrders from '../components/ChartOrders';
@@ -160,6 +161,11 @@ const Index = () => {
     });
   }, [params.whatToFarm]);
 
+  const [isNoticeVisible, setNoticeVisible] = useState<boolean>(true);
+
+  const toggleNotice = (visible: boolean) => {
+    setNoticeVisible(visible);
+  };
   return (
     <Container>
       <ContainerRow>
@@ -172,21 +178,20 @@ const Index = () => {
             selectedValues={whatToFarmSelectedParams}
             onChange={(val) => handleParams('whatToFarm', val)}
           />
-          <AnalyticsForm
-            selectedValues={dexScreneerSelectedParams}
-            data={dexScreneer}
-            onChange={(val) => handleParams('dexScreneer', val)}
+          {/* todo: form 2 WhatToFarm*/}
+
+          <AnalyticsFormSimple
             content={{
               title: 'DexScreneer',
             }}
+            showSecurityCheck={true}
           />
-          <AnalyticsForm
-            selectedValues={birdEyeSelectedParams}
-            data={birdEye}
-            onChange={(val) => handleParams('birdEye', val)}
+          <AnalyticsFormSimple
             content={{
               title: 'BirdEye',
             }}
+            showSecurityCheck={false}
+            toggleNotice={toggleNotice}
           />
 
           <WrapperRow>
@@ -239,98 +244,100 @@ const Index = () => {
               }}
             />
           )}
-          <Notice>
-            <AccordionMui
-              items={[
-                {
-                  id: 'panel1',
-                  summary: 'Go+ Security',
-                  subSummary: 'I am an accordion',
-                  details: 'Stay tuned for updates and further releases :)',
-                  icon: (
-                    <span style={{ color: 'currentcolor' }}>
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 16 16"
-                        fill="currentcolor"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M7.03676 1.21262C7.33097 1.04698 7.6629 0.959961 8.00053 0.959961C8.33817 0.959961 8.6701 1.04698 8.96431 1.21262C9.25852 1.37826 9.50507 1.61694 9.68018 1.90561L9.68172 1.90816L15.7368 12.0166C15.9083 12.3137 15.999 12.6505 16 12.9935C16.0009 13.3365 15.9121 13.6738 15.7422 13.9718C15.5723 14.2698 15.3274 14.5182 15.0317 14.6921C14.7361 14.8661 14.4001 14.9596 14.0571 14.9634L14.0512 14.9634L1.944 14.9634C1.601 14.9596 1.26496 14.8661 0.969326 14.6921C0.673687 14.5182 0.42875 14.2698 0.258885 13.9718C0.0890193 13.6738 0.000145875 13.3365 0.00110634 12.9935C0.0020668 12.6505 0.0928279 12.3137 0.26436 12.0166L0.268653 12.0092L6.31936 1.90816L6.32089 1.90561C6.496 1.61694 6.74255 1.37826 7.03676 1.21262ZM8.74239 5.07174C8.74239 4.66127 8.40963 4.32851 7.99916 4.32851C7.58868 4.32851 7.25592 4.66127 7.25592 5.07174V9.03566C7.25592 9.44613 7.58868 9.77889 7.99916 9.77889C8.40963 9.77889 8.74239 9.44613 8.74239 9.03566V5.07174ZM7.99916 11.0086C7.45186 11.0086 7.00818 11.4523 7.00818 11.9996C7.00818 12.5469 7.45186 12.9906 7.99916 12.9906H8.00907C8.55637 12.9906 9.00005 12.5469 9.00005 11.9996C9.00005 11.4523 8.55637 11.0086 8.00907 11.0086H7.99916Z"
-                          fill="#EE495F"
-                        />
-                      </svg>
-                    </span>
-                  ),
-                },
-                {
-                  id: 'panel2',
-                  summary: 'Quick Intel',
-                  subSummary: 'No issues',
-                  details: 'Stay tuned for updates and further releases :)',
-                  icon: (
-                    <span style={{ color: 'currentcolor' }}>
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clip-path="url(#clip0_2139_330)">
+          {isNoticeVisible && (
+            <Notice>
+              <AccordionMui
+                items={[
+                  {
+                    id: 'panel1',
+                    summary: 'Go+ Security',
+                    subSummary: 'I am an accordion',
+                    details: 'Stay tuned for updates and further releases :)',
+                    icon: (
+                      <span style={{ color: 'currentcolor' }}>
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 16 16"
+                          fill="currentcolor"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
                           <path
                             fill-rule="evenodd"
                             clip-rule="evenodd"
-                            d="M15.75 8C15.75 12.2802 12.2802 15.75 8 15.75C3.71979 15.75 0.25 12.2802 0.25 8C0.25 3.71979 3.71979 0.25 8 0.25C12.2802 0.25 15.75 3.71979 15.75 8ZM11.4697 6.80726C11.7448 6.53212 11.7448 6.08603 11.4697 5.81088C11.1945 5.53574 10.7484 5.53574 10.4733 5.81088L6.88336 9.40082L5.52331 8.04077C5.24817 7.76563 4.80207 7.76563 4.52693 8.04077C4.25179 8.31591 4.25179 8.76201 4.52693 9.03715L6.38517 10.8954C6.5173 11.0275 6.6965 11.1017 6.88336 11.1017C7.07021 11.1017 7.24942 11.0275 7.38155 10.8954L11.4697 6.80726Z"
-                            fill="#109A68"
+                            d="M7.03676 1.21262C7.33097 1.04698 7.6629 0.959961 8.00053 0.959961C8.33817 0.959961 8.6701 1.04698 8.96431 1.21262C9.25852 1.37826 9.50507 1.61694 9.68018 1.90561L9.68172 1.90816L15.7368 12.0166C15.9083 12.3137 15.999 12.6505 16 12.9935C16.0009 13.3365 15.9121 13.6738 15.7422 13.9718C15.5723 14.2698 15.3274 14.5182 15.0317 14.6921C14.7361 14.8661 14.4001 14.9596 14.0571 14.9634L14.0512 14.9634L1.944 14.9634C1.601 14.9596 1.26496 14.8661 0.969326 14.6921C0.673687 14.5182 0.42875 14.2698 0.258885 13.9718C0.0890193 13.6738 0.000145875 13.3365 0.00110634 12.9935C0.0020668 12.6505 0.0928279 12.3137 0.26436 12.0166L0.268653 12.0092L6.31936 1.90816L6.32089 1.90561C6.496 1.61694 6.74255 1.37826 7.03676 1.21262ZM8.74239 5.07174C8.74239 4.66127 8.40963 4.32851 7.99916 4.32851C7.58868 4.32851 7.25592 4.66127 7.25592 5.07174V9.03566C7.25592 9.44613 7.58868 9.77889 7.99916 9.77889C8.40963 9.77889 8.74239 9.44613 8.74239 9.03566V5.07174ZM7.99916 11.0086C7.45186 11.0086 7.00818 11.4523 7.00818 11.9996C7.00818 12.5469 7.45186 12.9906 7.99916 12.9906H8.00907C8.55637 12.9906 9.00005 12.5469 9.00005 11.9996C9.00005 11.4523 8.55637 11.0086 8.00907 11.0086H7.99916Z"
+                            fill="#EE495F"
                           />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_2139_330">
-                            <rect width="16" height="16" fill="white" />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    </span>
-                  ),
-                },
-                {
-                  id: 'panel3',
-                  summary: 'Token Sniffer',
-                  subSummary: '100/100',
-                  details: 'Stay tuned for updates and further releases :)',
-                  icon: (
-                    <span style={{ color: 'currentcolor' }}>
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clip-path="url(#clip0_2139_330)">
-                          <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M15.75 8C15.75 12.2802 12.2802 15.75 8 15.75C3.71979 15.75 0.25 12.2802 0.25 8C0.25 3.71979 3.71979 0.25 8 0.25C12.2802 0.25 15.75 3.71979 15.75 8ZM11.4697 6.80726C11.7448 6.53212 11.7448 6.08603 11.4697 5.81088C11.1945 5.53574 10.7484 5.53574 10.4733 5.81088L6.88336 9.40082L5.52331 8.04077C5.24817 7.76563 4.80207 7.76563 4.52693 8.04077C4.25179 8.31591 4.25179 8.76201 4.52693 9.03715L6.38517 10.8954C6.5173 11.0275 6.6965 11.1017 6.88336 11.1017C7.07021 11.1017 7.24942 11.0275 7.38155 10.8954L11.4697 6.80726Z"
-                            fill="#109A68"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_2139_330">
-                            <rect width="16" height="16" fill="white" />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    </span>
-                  ),
-                },
-              ]}
-            ></AccordionMui>
-          </Notice>
+                        </svg>
+                      </span>
+                    ),
+                  },
+                  {
+                    id: 'panel2',
+                    summary: 'Quick Intel',
+                    subSummary: 'No issues',
+                    details: 'Stay tuned for updates and further releases :)',
+                    icon: (
+                      <span style={{ color: 'currentcolor' }}>
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g clip-path="url(#clip0_2139_330)">
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M15.75 8C15.75 12.2802 12.2802 15.75 8 15.75C3.71979 15.75 0.25 12.2802 0.25 8C0.25 3.71979 3.71979 0.25 8 0.25C12.2802 0.25 15.75 3.71979 15.75 8ZM11.4697 6.80726C11.7448 6.53212 11.7448 6.08603 11.4697 5.81088C11.1945 5.53574 10.7484 5.53574 10.4733 5.81088L6.88336 9.40082L5.52331 8.04077C5.24817 7.76563 4.80207 7.76563 4.52693 8.04077C4.25179 8.31591 4.25179 8.76201 4.52693 9.03715L6.38517 10.8954C6.5173 11.0275 6.6965 11.1017 6.88336 11.1017C7.07021 11.1017 7.24942 11.0275 7.38155 10.8954L11.4697 6.80726Z"
+                              fill="#109A68"
+                            />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_2139_330">
+                              <rect width="16" height="16" fill="white" />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                      </span>
+                    ),
+                  },
+                  {
+                    id: 'panel3',
+                    summary: 'Token Sniffer',
+                    subSummary: '100/100',
+                    details: 'Stay tuned for updates and further releases :)',
+                    icon: (
+                      <span style={{ color: 'currentcolor' }}>
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g clip-path="url(#clip0_2139_330)">
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M15.75 8C15.75 12.2802 12.2802 15.75 8 15.75C3.71979 15.75 0.25 12.2802 0.25 8C0.25 3.71979 3.71979 0.25 8 0.25C12.2802 0.25 15.75 3.71979 15.75 8ZM11.4697 6.80726C11.7448 6.53212 11.7448 6.08603 11.4697 5.81088C11.1945 5.53574 10.7484 5.53574 10.4733 5.81088L6.88336 9.40082L5.52331 8.04077C5.24817 7.76563 4.80207 7.76563 4.52693 8.04077C4.25179 8.31591 4.25179 8.76201 4.52693 9.03715L6.38517 10.8954C6.5173 11.0275 6.6965 11.1017 6.88336 11.1017C7.07021 11.1017 7.24942 11.0275 7.38155 10.8954L11.4697 6.80726Z"
+                              fill="#109A68"
+                            />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_2139_330">
+                              <rect width="16" height="16" fill="white" />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                      </span>
+                    ),
+                  },
+                ]}
+              ></AccordionMui>
+            </Notice>
+          )}
         </CardContainer>
       </ContainerRow>
     </Container>

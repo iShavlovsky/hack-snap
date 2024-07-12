@@ -1,9 +1,11 @@
 import {
   Checkbox,
+  Divider,
   FormControl,
   FormControlLabel,
   FormGroup,
 } from '@mui/material';
+import React from 'react';
 import styled from 'styled-components';
 
 import type { OptionType } from '../../types';
@@ -12,6 +14,8 @@ const FormWrapper = styled.div`
   background-color: ${({ theme }) => theme.colors.card?.default};
   border: 1px solid ${({ theme }) => theme.colors.border?.default};
   border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   box-shadow: ${({ theme }) => theme.shadows.default};
   padding: 2.4rem;
@@ -33,6 +37,8 @@ type CardProps<T> = {
 const Title = styled.h3`
   font-size: ${({ theme }) => theme.fontSizes.large};
   margin: 0;
+  margin-bottom: 0.3rem;
+
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
@@ -54,7 +60,12 @@ export const AnalyticsForm = <T,>({
     <FormWrapper>
       <FormControl component="fieldset">
         <Title>{title}</Title>
-        <FormGroup>
+        <Divider />
+        <FormGroup
+          sx={{
+            marginTop: 1,
+          }}
+        >
           {data.map(({ label, value }, index) => (
             <FormControlLabel
               key={index}
