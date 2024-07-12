@@ -9,6 +9,7 @@ import AccordionMui from '../components/AccordionMui';
 import { AnalyticsForm } from '../components/AnalitycsForm';
 import { AnalyticsFormSimple } from '../components/AnalitycsFormSimple';
 import { CardTickersInfo } from '../components/CardTickersInfo';
+import { ChartIndicators } from '../components/ChartIndicators';
 import ChartMaterial from '../components/ChartMaterial';
 import ChartOrders from '../components/ChartOrders';
 import GreedIndex from '../components/GreedIndex';
@@ -46,7 +47,7 @@ const Wrapper = styled.div`
 const WrapperChart = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 40vw;
+  max-width: 50vw;
 `;
 
 const WrapperRow = styled.div`
@@ -212,10 +213,22 @@ const Index = () => {
               <span>Send Analitycs</span>
             </LoadingButton>
           </WrapperRow>
+          <LoadingButton
+            size="large"
+            variant="contained"
+            color="success"
+            loading={isLoadingResetSnapParams}
+          >
+            <span>buy pro</span>
+          </LoadingButton>
         </Wrapper>
         <WrapperChart>
           {/* todo: Chart Indicators*/}
-          <ChartMaterial />
+          <ChartIndicators
+            content={{
+              title: '',
+            }}
+          />
           {/* todo: Chart Orders*/}
           <ChartOrders />
         </WrapperChart>
