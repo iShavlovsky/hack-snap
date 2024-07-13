@@ -5,3 +5,19 @@ export type OptionType<Type> = {
   value: Type;
   fixedNumber?: number;
 };
+
+export type TableDataItem = {
+  amount0: number;
+  amount1: number;
+  amountUSD: number;
+  blockNumber: number;
+  curveSide: string;
+  maker: string;
+  price0: number;
+  price1: number;
+  priceUSD0: number;
+  priceUSD1: number;
+  side: string;
+  ts: string;
+  txHash: string;
+};

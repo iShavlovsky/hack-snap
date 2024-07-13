@@ -1,6 +1,6 @@
 import { LoadingButton } from '@mui/lab';
 import { useQuery } from '@tanstack/react-query';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { whatToFarm } from '../../../../mock/filterParamsData';
@@ -120,20 +120,32 @@ const Index = () => {
     [params.whatToFarm],
   );
 
-  const { data, isPending } = useQuery({
-    queryKey: [QueryKeys.ChartPairHistory],
+  const { data: pairFilterData, isPending: isPendingPairFilterData } = useQuery(
+    {
+      queryKey: [QueryKeys.LiquidPair],
+      queryFn: async () =>
+        await ApiService.fetchPairData({
+          inv: false,
+          slug: '0x3Cb104f044dB23d6513F2A6100a1997Fa5e3F587',
+        }),
+      select: (getData) =>
+        extractValues(getData, tokenAnalitycsWhtfByParams) || [],
+      refetchInterval: 30000,
+    },
+  );
+
+  const { data: tableData, isPending: isPendingTableData } = useQuery({
+    queryKey: [QueryKeys.TablePair],
     queryFn: async () =>
-      await ApiService.fetchPairData({
-        inv: false,
+      await ApiService.fetchTableData({
+        page: 1,
+        size: 10,
         slug: '0x3Cb104f044dB23d6513F2A6100a1997Fa5e3F587',
       }),
     refetchInterval: 30000,
   });
 
-  const analitycsData = useMemo(
-    () => (data ? extractValues(data, tokenAnalitycsWhtfByParams) : []),
-    [tokenAnalitycsWhtfByParams, data],
-  );
+  useEffect(() => console.log(tableData), [tableData]);
 
   const isMetaMaskReady = isLocalSnap(defaultSnapOrigin)
     ? isFlask
@@ -233,8 +245,8 @@ const Index = () => {
           {/* todo: Card Tickers Info*/}
 
           <CardTickersInfo
-            data={analitycsData}
-            isPending={isPending}
+            data={pairFilterData}
+            isPending={isPendingPairFilterData}
             content={{
               title: 'Token Analytics',
             }}
