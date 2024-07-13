@@ -21,3 +21,8 @@ export type TableDataItem = {
   ts: string;
   txHash: string;
 };
+
+export type TableDataResp = {
+  list: TableDataItem[];
+  page: { page: number; size: number; total: number };
+};

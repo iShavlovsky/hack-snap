@@ -244,7 +244,7 @@ const Index = () => {
           {/*  }}*/}
           {/* />*/}
           {/* todo: Chart Orders*/}
-          <ChartOrders />
+          <ChartOrders isPending={isPendingTableData} data={tableData} />
         </WrapperChart>
 
         <CardContainer>

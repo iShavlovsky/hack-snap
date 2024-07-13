@@ -4,159 +4,115 @@ import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
 import styled from 'styled-components';
 
-type Row = {
-  id: number;
-  date: string;
-  time: string;
-  type: string;
-  totalUSD: number;
-  priceUSD: number;
-  totalWETH: number;
-  priceWETH: number;
-  totalWBTC: number;
-  creator: string;
-};
+import type { TableDataResp } from '../types';
 
-const BigRow = 160;
+const BigRow = 210;
 const SmallRow = 140;
 
+// export type TableDataItem = {
+//   amount0: number;
+//   amount1: number;
+//   amountUSD: number;
+//   blockNumber: number;
+//   curveSide: string;
+//   maker: string;
+//   price0: number;
+//   price1: number;
+//   priceUSD0: number;
+//   priceUSD1: number;
+//   side: string;
+//   ts: string;
+//   txHash: string;
+// };
+
 const columns: GridColDef[] = [
-  { field: 'date', headerName: 'Date', width: SmallRow },
-  { field: 'time', headerName: 'Time', width: SmallRow },
-  { field: 'type', headerName: 'Type', width: SmallRow },
+  { field: 'ts', headerName: 'Date/Time', width: BigRow },
+  { field: 'side', headerName: 'Type', width: SmallRow },
   {
-    field: 'totalUSD',
+    field: 'priceUSD1',
     headerName: 'Total USD',
     type: 'number',
     width: SmallRow,
   },
   {
-    field: 'priceUSD',
+    field: 'priceUSD0',
     headerName: 'Price $',
     type: 'number',
     width: SmallRow,
   },
   {
-    field: 'totalWETH',
+    field: 'price1',
     headerName: 'Total WETH',
     type: 'number',
     width: SmallRow,
   },
   {
-    field: 'priceWETH',
+    field: 'price0',
     headerName: 'Price WETH',
     type: 'number',
     width: SmallRow,
   },
   {
-    field: 'totalWBTC',
+    field: 'amount1',
     headerName: 'Total WBTC',
     type: 'number',
     width: SmallRow,
   },
-  { field: 'creator', headerName: 'Creator', width: BigRow },
+  { field: 'maker', headerName: 'Creator', width: BigRow },
 ];
 
-const rows: Row[] = [
-  {
-    id: 1,
-    date: '2024.07.09',
-    time: '9:34:35 AM',
-    type: 'sell',
-    totalUSD: 207663.59,
-    priceUSD: 57684.33,
-    totalWETH: 67.07,
-    priceWETH: 18.63,
-    totalWBTC: 3.6,
-    creator: '0x804...9',
-  },
-  {
-    id: 2,
-    date: '2024.07.09',
-    time: '9:34:35 AM',
-    type: 'sell',
-    totalUSD: 131949.95,
-    priceUSD: 57753.62,
-    totalWETH: 42.58,
-    priceWETH: 18.64,
-    totalWBTC: 2.28,
-    creator: '0xf1b...a1b',
-  },
-  {
-    id: 3,
-    date: '2024.07.09',
-    time: '9:34:35 AM',
-    type: 'sell',
-    totalUSD: 5011.17,
-    priceUSD: 57732.33,
-    totalWETH: 1.62,
-    priceWETH: 18.63,
-    totalWBTC: 0.09,
-    creator: '0x3C4...6',
-  },
-  {
-    id: 4,
-    date: '2024.07.09',
-    time: '9:34:47 AM',
-    type: 'sell',
-    totalUSD: 184781.69,
-    priceUSD: 57744.28,
-    totalWETH: 59.65,
-    priceWETH: 18.63,
-    totalWBTC: 3.28,
-    creator: '0x804...9',
-  },
-];
+const Description = styled.div`
+  margin-top: 1rem;
+`;
 
-/**
- *
- */
+type ChartOrderProps = {
+  data: TableDataResp | undefined;
+  isPending?: boolean;
+};
 
-/**
- *
- */
-
-/**
- *
- */
-export default function chartOrders() {
+const chartOrders = ({ data, isPending }: ChartOrderProps) => {
+  console.log('333', data?.list);
   return (
     <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        sx={{
-          '& .MuiDataGrid-columnHeaderCheckbox, .MuiDataGrid-cellCheckbox': {
-            display: 'none', // Размер шрифта ячеек данных
-          },
-          '& .MuiSvgIcon-root': {
-            fontSize: '2rem', // Размер шрифта ячеек данных
-          },
-
-          '& .MuiButtonBase-root': {
-            padding: '1rem', // Размер шрифта ячеек данных
-          },
-
-          '& .MuiDataGrid-cell': {
-            fontSize: '1.7rem', // Размер шрифта ячеек данных
-          },
-          '& .MuiSelect-select': {
-            fontSize: '1.7rem',
-            lineHeight: '160%', // Размер шрифта ячеек данных
-          },
-          '& .MuiTablePagination-actions': {
-            display: 'flex',
-            gap: '.5rem', // Размер шрифта ячеек данных
-          },
-        }}
-      />
+      {isPending && data ? (
+        <Description>Loading...</Description>
+      ) : (
+        <DataGrid
+          rows={data?.list ?? []}
+          columns={columns}
+          getRowId={(row) => row.txHash}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+          sx={{
+            '& .MuiDataGrid-columnHeaderCheckbox, .MuiDataGrid-cellCheckbox': {
+              display: 'none', // Размер шрифта ячеек данных
+            },
+            '& .MuiSvgIcon-root': {
+              fontSize: '2rem', // Размер шрифта ячеек данных
+            },
+            '& .MuiButtonBase-root': {
+              padding: '1rem', // Размер шрифта ячеек данных
+            },
+            '& .MuiDataGrid-cell': {
+              fontSize: '1.7rem', // Размер шрифта ячеек данных
+            },
+            '& .MuiSelect-select': {
+              fontSize: '1.7rem',
+              lineHeight: '160%', // Размер шрифта ячеек данных
+            },
+            '& .MuiTablePagination-actions': {
+              display: 'flex',
+              gap: '.5rem', // Размер шрифта ячеек данных
+            },
+          }}
+        />
+      )}
     </div>
   );
-}
+};
+export default chartOrders;

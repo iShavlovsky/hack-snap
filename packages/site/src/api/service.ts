@@ -1,9 +1,6 @@
-import type { AxiosResponse } from 'axios';
-import axios from 'axios';
-import type { TableDataItem } from 'src/types';
-
 import type { PairResponseType } from '../../../../mock/mockApi';
 import type { MockApiPairType } from '../../../../types/requests';
+import type { TableDataResp } from '../types';
 import http from './config';
 
 class ApiService {
@@ -17,12 +14,9 @@ class ApiService {
     route?: string;
   }) {
     try {
-      const response = await http.get<AxiosResponse<PairResponseType>>(
-        `pair-stat/${slug}`,
-        {
-          params: { inv, route },
-        },
-      );
+      const response = await http.get<PairResponseType>(`pair-stat/${slug}`, {
+        params: { inv, route },
+      });
       return response.data;
     } catch (error) {
       console.log(error);
@@ -40,14 +34,12 @@ class ApiService {
     inv: boolean;
   }) {
     try {
-      const response = await http.get<
-        AxiosResponse<{
-          list: TableDataItem[];
-          page: { page: number; size: number; total: number };
-        }>
-      >(`pair-order-book/${slug}`, {
-        params,
-      });
+      const response = await http.get<TableDataResp>(
+        `pair-order-book/${slug}`,
+        {
+          params,
+        },
+      );
       return response.data;
     } catch (error) {
       console.log(error);

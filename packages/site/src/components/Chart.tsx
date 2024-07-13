@@ -1,5 +1,5 @@
 // TradingViewWidget.tsx
-import React, { useEffect, useRef, memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 const WrapperChart = styled.div`

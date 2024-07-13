@@ -14,7 +14,7 @@ type CardTickersInfoProps<T> = {
   isPending?: boolean;
 };
 
-const CardTickersInfoWraper = styled.div<{
+export const CardTickersInfoWraper = styled.div<{
   fullWidth?: boolean | undefined;
   disabled?: boolean | undefined;
 }>`
@@ -47,6 +47,41 @@ const Description = styled.div`
 `;
 
 export const CardTickersInfo = <T extends string>({
+  content,
+  disabled = false,
+  fullWidth,
+  data,
+  isPending,
+}: CardTickersInfoProps<T>) => {
+  const { title } = content;
+  return (
+    <CardTickersInfoWraper fullWidth={fullWidth} disabled={disabled}>
+      {title && <Title>{title}</Title>}
+      {isPending ? (
+        <Description>Loading...</Description>
+      ) : (
+        !isPending &&
+        data &&
+        data.map(({ label, value, fixedNumber }, index) => (
+          <React.Fragment key={index}>
+            <Description>
+              {label}:{' '}
+              {fixedNumber ? parseFloat(value).toFixed(fixedNumber) : value}
+            </Description>
+            {index !== data.length - 1 && <Divider />}
+          </React.Fragment>
+        ))
+      )}
+      {!data?.length && (
+        <Description>
+          Select one of the filters to display analytics
+        </Description>
+      )}
+    </CardTickersInfoWraper>
+  );
+};
+
+export const CardTickersInfo2 = <T extends string>({
   content,
   disabled = false,
   fullWidth,
