@@ -8,17 +8,16 @@ import { SnapRequestEnum } from '../../../../types/requests';
 import { extractValues } from '../../../../utils/helper';
 import { QueryKeys } from '../api/queryKeys';
 import ApiService from '../api/service';
-import { InstallFlaskButton, Card } from '../components';
+import { Card, InstallFlaskButton } from '../components';
 import AccordionMui from '../components/AccordionMui';
 import { AnalyticsForm } from '../components/AnalitycsForm';
 import { AnalyticsFormSimple } from '../components/AnalitycsFormSimple';
 import { CardTickersInfo } from '../components/CardTickersInfo';
-import { ChartIndicators } from '../components/ChartIndicators';
 import ChartOrders from '../components/ChartOrders';
 import GreedIndex from '../components/GreedIndex';
 import { defaultSnapOrigin } from '../config';
 import { useStateContext } from '../contexts/StateContext';
-import { useMetaMask, useInvokeSnap, useMetaMaskContext } from '../hooks';
+import { useInvokeSnap, useMetaMask, useMetaMaskContext } from '../hooks';
 import { isLocalSnap } from '../utils';
 
 const Container = styled.div`
@@ -207,11 +206,20 @@ const Index = () => {
         </Wrapper>
         <WrapperChart>
           {/* todo: Chart Indicators*/}
-          <ChartIndicators
-            content={{
-              title: '',
-            }}
-          />
+          <Wrapper>
+            <iframe
+              width="100%"
+              height="100%"
+              id="wtf-embed-chart"
+              title="WhatToFarm Embed Chart"
+              src="https://whattofarm.io/ru/chart-pairs-widget/0xDDed227D71A096c6B5D87807C1B5C456771aAA94"
+            ></iframe>
+          </Wrapper>
+          {/* <ChartIndicators*/}
+          {/*  content={{*/}
+          {/*    title: '',*/}
+          {/*  }}*/}
+          {/* />*/}
           {/* todo: Chart Orders*/}
           <ChartOrders />
         </WrapperChart>

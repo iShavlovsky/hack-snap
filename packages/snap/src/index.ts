@@ -1,10 +1,10 @@
 import type {
-  OnTransactionHandler,
-  OnRpcRequestHandler,
-  OnInstallHandler,
   OnHomePageHandler,
+  OnInstallHandler,
+  OnRpcRequestHandler,
+  OnTransactionHandler,
 } from '@metamask/snaps-sdk';
-import { row, image, heading, panel, text, divider } from '@metamask/snaps-sdk';
+import { divider, heading, image, panel, row, text } from '@metamask/snaps-sdk';
 
 import { whatToFarm } from '../../../mock/filterParamsData';
 import type { PairResponseType } from '../../../mock/mockApi';
@@ -16,9 +16,26 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   const tokenAddress = transaction.to;
   const amount = transaction.value;
 
+  const STG = '0x808d7c71ad2ba3FA531b068a2417C63106BC0949';
+  const WETH = '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f';
+  const BH = '0x1cc8C191f3362FC13B5DDF95e5FAfb27e1b145c6';
+
+  let pair = '';
+  const inv = false;
+
+  if (tokenAddress === STG || tokenAddress === WETH) {
+    const STGtoWETH = '0x72482cc775E9DD6245342f7042613a7036a0D2A0';
+    pair = STGtoWETH;
+  }
+
+  if (tokenAddress === BH || tokenAddress === WETH) {
+    const BHtoWETH = '0xcc1c48ce14F70Fc0E4D3FCf193bAD75d21C7b009';
+    pair = BHtoWETH;
+  }
+
   let errorMessage = '';
   const pairData = (await fetch(
-    'https://whattofarm.io/api/v3/open/pair-stat/0x3Cb104f044dB23d6513F2A6100a1997Fa5e3F587?inv=false&route=01',
+    `https://whattofarm.io/api/v3/open/pair-stat/${pair}?inv=false&route=01`,
   )
     .then(async (response) => {
       if (!response.ok) {
@@ -29,6 +46,17 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
     .catch(() => {
       errorMessage = 'Network error';
     })) as PairResponseType;
+
+  /**
+   *
+   * @param value
+   * @param decimalPlaces
+   */
+  function truncateToFixed(value: number, decimalPlaces = 2) {
+    const factor = Math.pow(10, decimalPlaces);
+    const truncatedValue = Math.floor(value * factor) / factor;
+    return truncatedValue.toFixed(decimalPlaces);
+  }
 
   const persistedData = (await snap.request({
     method: 'snap_manageState',
@@ -61,9 +89,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
                   `${label}`,
                   text(
                     `${
-                      fixedNumber
-                        ? parseFloat(value).toFixed(fixedNumber)
-                        : value
+                      fixedNumber ? truncateToFixed(value, fixedNumber) : value
                     }`,
                   ),
                 ),
