@@ -72,7 +72,7 @@ export const CardTickersInfo = <T extends string>({
           </React.Fragment>
         ))
       )}
-      {!data?.length && (
+      {!data?.length && !isPending && (
         <Description>
           Select one of the filters to display analytics
         </Description>

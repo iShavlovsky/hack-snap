@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import type { PairResponseType } from '../../../../mock/mockApi';
 import type { MockApiPairType } from '../../../../types/requests';
 import type { TableDataResp } from '../types';

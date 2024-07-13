@@ -55,7 +55,7 @@ const ControlledAccordions: React.FC<ControlledAccordionsProps> = ({
             aria-controls={`${item.id}-content`}
             id={`${item.id}-header`}
           >
-            <Typography sx={{ width: '33%', flexShrink: 0 }}>
+            <Typography sx={{ width: '40%', flexShrink: 0 }}>
               {item.summary}
             </Typography>
 

@@ -43,9 +43,23 @@ const Wrapper = styled.div`
   gap: 1em;
 `;
 
+const WrapperIframe = styled.div`
+  background-color: ${({ theme }) => theme.colors.background?.alternative};
+  border: 1px solid ${({ theme }) => theme.colors.border?.default};
+  color: ${({ theme }) => theme.colors.text?.alternative};
+  border-radius: 0.5rem;
+  width: calc(100% - 0.5rem);
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  & iframe {
+    margin: -2px;
+  }
+`;
+
 const WrapperChart = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 1em;
   max-width: 50vw;
 `;
 
@@ -215,7 +229,7 @@ const Index = () => {
               onClick={onSendParams}
               loading={isLoadingUpdateSnapParams}
             >
-              <span>Send Analitycs</span>
+              <span>Save Analitycs</span>
             </LoadingButton>
           </WrapperRow>
           <LoadingButton
@@ -229,7 +243,7 @@ const Index = () => {
         </Wrapper>
         <WrapperChart>
           {/* todo: Chart Indicators*/}
-          <Wrapper>
+          <WrapperIframe>
             <iframe
               width="100%"
               height="100%"
@@ -237,12 +251,7 @@ const Index = () => {
               title="WhatToFarm Embed Chart"
               src="https://whattofarm.io/ru/chart-pairs-widget/0xDDed227D71A096c6B5D87807C1B5C456771aAA94"
             ></iframe>
-          </Wrapper>
-          {/* <ChartIndicators*/}
-          {/*  content={{*/}
-          {/*    title: '',*/}
-          {/*  }}*/}
-          {/* />*/}
+          </WrapperIframe>
           {/* todo: Chart Orders*/}
           <ChartOrders isPending={isPendingTableData} data={tableData} />
         </WrapperChart>
@@ -263,7 +272,7 @@ const Index = () => {
             }}
           />
 
-          <GreedIndex />
+          {/* <GreedIndex /> */}
           {!isMetaMaskReady && (
             <Card
               content={{
@@ -274,6 +283,13 @@ const Index = () => {
               }}
             />
           )}
+          <AnalyticsFormSimple
+            content={{
+              title: 'DexScreneer',
+            }}
+            showSecurityCheck={true}
+            toggleNotice={toggleNotice}
+          />
           {isNoticeVisible && (
             <Notice>
               <AccordionMui
@@ -368,13 +384,6 @@ const Index = () => {
               ></AccordionMui>
             </Notice>
           )}
-          <AnalyticsFormSimple
-            content={{
-              title: 'DexScreneer',
-            }}
-            showSecurityCheck={true}
-            toggleNotice={toggleNotice}
-          />
           <AnalyticsFormSimple
             content={{
               title: 'BirdEye',

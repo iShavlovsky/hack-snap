@@ -16,17 +16,17 @@ export const whatToFarm = [
   {
     label: 'Price',
     value: 'price',
-    fixedNumber: 6,
+    fixedNumber: 7,
   },
   {
     label: 'Price change (24h)',
     value: 'pricePercentCount.h24',
-    fixedNumber: 5,
+    fixedNumber: 7,
   },
   {
     label: 'Price change (1h)',
     value: 'pricePercentCount.h1',
-    fixedNumber: 5,
+    fixedNumber: 7,
   },
   {
     label: 'Dex transactions (24h)',

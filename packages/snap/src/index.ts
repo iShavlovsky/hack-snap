@@ -231,7 +231,10 @@ export const onInstall: OnInstallHandler = async () => {
     divider(),
 
     text(
-      'This is your analytical assistant! You can get analytics on your transactions and much more',
+      'Degen Watch snap is a tool that helps to customize your on-chain experience with real-time data. The snap uses real time database of blockchain scanner provider and provide user with token insights at a glance on the MetaMask wallet.',
+    ),
+    text(
+      'After installing the Snap, it will appear in the transaction confirmation screen.',
     ),
     text(
       'Check out more about our Snap at [Degen Watch Snap](https://aa.com/snap)',
@@ -260,12 +263,10 @@ export const onHomePage: OnHomePageHandler = async () => {
     text(
       'Degen Watch snap is a tool that helps to customize your on-chain experience with real-time data. The snap uses real time database of blockchain scanner provider and provide user with token insights at a glance on the MetaMask wallet.',
     ),
+
     text(
-      'After installing the Snap, it will appear in the transaction confirmation screen.',
+      'Check out more about our Snap at [Degen Watch Snap](https://aa.com/snap)',
     ),
-    heading('PERMISSIONS BY DEGEN WATCH'),
-    text('• Allow websites to communicate with Degeb Watch'),
-    text('• Allow websites to communicate with Degeb Watch'),
   ]);
 
   return {
