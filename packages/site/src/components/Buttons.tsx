@@ -1,6 +1,7 @@
 import type { LoadingButtonProps } from '@mui/lab';
 import { LoadingButton } from '@mui/lab';
 import { Button } from '@mui/material';
+import React from 'react';
 import styled from 'styled-components';
 
 import { useMetaMask, useRequestSnap } from '../hooks';
@@ -40,10 +41,13 @@ export const InstallFlaskButton = () => (
   </a>
 );
 
-export const MuiLoadingButton = ({ ...rest }: LoadingButtonProps) => {
+export const MuiLoadingButton: React.FC<LoadingButtonProps> = ({
+  children,
+  ...rest
+}) => {
   return (
     <LoadingButton size="large" variant="contained" {...rest}>
-      <span>Connect</span>
+      {children}
     </LoadingButton>
   );
 };
@@ -63,7 +67,7 @@ export const HeaderButtons = () => {
         loading={isLoading}
         onClick={requestSnap}
       >
-        <span>Connect</span>
+        <span>Install snap</span>
       </MuiLoadingButton>
     );
   }

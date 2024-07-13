@@ -1,9 +1,12 @@
+/* eslint-disable no-implicit-coercion */
 import { LoadingButton } from '@mui/lab';
-import { useQuery } from '@tanstack/react-query';
+import { Button } from '@mui/material';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { whatToFarm } from '../../../../mock/filterParamsData';
+import type { MockApiPairType } from '../../../../types/requests';
 import { SnapRequestEnum } from '../../../../types/requests';
 import { extractValues } from '../../../../utils/helper';
 import { QueryKeys } from '../api/queryKeys';
@@ -82,31 +85,15 @@ const Notice = styled.div`
   border-radius: 0.5rem;
 `;
 
-const ErrorMessage = styled.div`
-  background-color: ${({ theme }) => theme.colors.error?.muted};
-  border: 1px solid ${({ theme }) => theme.colors.error?.default};
-  color: ${({ theme }) => theme.colors.error?.alternative};
-  border-radius: 0.5rem;
-  padding: 2.4rem;
-  margin-bottom: 2.4rem;
-  margin-top: 2.4rem;
-  max-width: 60rem;
-  width: 100%;
-  ${({ theme }) => theme.mediaQueries.small} {
-    padding: 1.6rem;
-    margin-bottom: 1.2rem;
-    margin-top: 1.2rem;
-    max-width: 100%;
-  }
-`;
-
 const Index = () => {
-  const { error } = useMetaMaskContext();
+  const { provider } = useMetaMaskContext();
   const { isFlask, snapsDetected } = useMetaMask();
   const [resetSnapParams, { isLoading: isLoadingResetSnapParams }] =
     useInvokeSnap();
-  const [updateSnapParams, { isLoading: isLoadingUpdateSnapParams }] =
-    useInvokeSnap();
+  const [
+    updateSnapParams,
+    { isLoading: isLoadingUpdateSnapParams, isSuccess: isSuccessUpdateParams },
+  ] = useInvokeSnap();
 
   const { params, handleParams, resetStore } = useStateContext();
 
@@ -120,32 +107,62 @@ const Index = () => {
     [params.whatToFarm],
   );
 
+  const { data: currentChain } = useQuery({
+    queryKey: [QueryKeys.MockApiCurrentChain],
+    queryFn: async () => await ApiService.fetchCurrentPair(),
+    refetchInterval: 20000,
+  });
+
+  useEffect(() => {
+    if (isSuccessUpdateParams && provider) {
+      (async () => {
+        try {
+          await provider.request({
+            method: 'wallet_invokeSnap',
+            params: {
+              snapId: defaultSnapOrigin,
+              request: { method: SnapRequestEnum.SendParamsSuccess },
+            },
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      })();
+    }
+  }, [isSuccessUpdateParams, provider]);
+
+  // const { mutate } = useMutation({
+  //   mutationFn: async (
+  //     changeParams: Pick<MockApiPairType, 'inv' | 'selectedPair'>,
+  //   ) => await ApiService.changeCurrentPair(changeParams),
+  //   mutationKey: [QueryKeys.MockApiCurrentChain],
+  // });
+
   const { data: pairFilterData, isPending: isPendingPairFilterData } = useQuery(
     {
-      queryKey: [QueryKeys.LiquidPair],
+      queryKey: [QueryKeys.LiquidPair, currentChain],
       queryFn: async () =>
         await ApiService.fetchPairData({
-          inv: false,
-          slug: '0x3Cb104f044dB23d6513F2A6100a1997Fa5e3F587',
+          inv: currentChain?.inv,
+          slug: currentChain?.selectedPair,
         }),
       select: (getData) =>
         extractValues(getData, tokenAnalitycsWhtfByParams) || [],
-      refetchInterval: 30000,
+      enabled: !!currentChain,
     },
   );
 
   const { data: tableData, isPending: isPendingTableData } = useQuery({
-    queryKey: [QueryKeys.TablePair],
+    queryKey: [QueryKeys.TablePair, currentChain],
     queryFn: async () =>
       await ApiService.fetchTableData({
         page: 1,
         size: 10,
-        slug: '0x3Cb104f044dB23d6513F2A6100a1997Fa5e3F587',
+        slug: currentChain?.selectedPair,
+        inv: currentChain?.inv,
       }),
-    refetchInterval: 30000,
+    enabled: !!currentChain,
   });
-
-  useEffect(() => console.log(tableData), [tableData]);
 
   const isMetaMaskReady = isLocalSnap(defaultSnapOrigin)
     ? isFlask
@@ -158,6 +175,7 @@ const Index = () => {
     resetStore();
   };
 
+  // Update snap params
   const onSendParams = useCallback(async () => {
     await updateSnapParams({
       method: SnapRequestEnum.UpdateParams,
@@ -176,6 +194,16 @@ const Index = () => {
   return (
     <Container>
       <ContainerRow>
+        {/* <Button
+          onClick={() =>
+            mutate({
+              inv: true,
+              selectedPair: '0xf6d6d8AD2611832288FD0A0A0B77a81C7715aD0E',
+            })
+          }
+        >
+          change
+        </Button> */}
         <Wrapper>
           <AnalyticsForm
             content={{
@@ -237,11 +265,11 @@ const Index = () => {
         </WrapperChart>
 
         <CardContainer>
-          {error && (
+          {/* {error && (
             <ErrorMessage>
               <b>An error happened:</b> {error.message}
             </ErrorMessage>
-          )}
+          )} */}
           {/* todo: Card Tickers Info*/}
 
           <CardTickersInfo

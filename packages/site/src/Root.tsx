@@ -43,9 +43,9 @@ export const Root: FunctionComponent<RootProps> = ({ children }) => {
       <ToggleThemeContext.Provider value={toggleTheme}>
         <ThemeProvider theme={darkTheme ? dark : light}>
           <ThemeProviderMui theme={theme}>
-            <MetaMaskProvider>
-              <StateProvider>{children}</StateProvider>
-            </MetaMaskProvider>
+            <StateProvider>
+              <MetaMaskProvider>{children}</MetaMaskProvider>
+            </StateProvider>
           </ThemeProviderMui>
         </ThemeProvider>
       </ToggleThemeContext.Provider>
