@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import type { TableDataResp } from '../types';
 
-const BigRow = 160;
+const BigRow = 210;
 const SmallRow = 140;
 
 // export type TableDataItem = {
@@ -26,40 +26,39 @@ const SmallRow = 140;
 // };
 
 const columns: GridColDef[] = [
-  { field: 'ts', headerName: 'Date', width: SmallRow },
-  { field: 'time', headerName: 'Time', width: SmallRow },
+  { field: 'ts', headerName: 'Date/Time', width: BigRow },
   { field: 'side', headerName: 'Type', width: SmallRow },
   {
-    field: 'totalUSD',
+    field: 'priceUSD1',
     headerName: 'Total USD',
     type: 'number',
     width: SmallRow,
   },
   {
-    field: 'priceUSD',
+    field: 'priceUSD0',
     headerName: 'Price $',
     type: 'number',
     width: SmallRow,
   },
   {
-    field: 'totalWETH',
+    field: 'price1',
     headerName: 'Total WETH',
     type: 'number',
     width: SmallRow,
   },
   {
-    field: 'priceWETH',
+    field: 'price0',
     headerName: 'Price WETH',
     type: 'number',
     width: SmallRow,
   },
   {
-    field: 'totalWBTC',
+    field: 'amount1',
     headerName: 'Total WBTC',
     type: 'number',
     width: SmallRow,
   },
-  { field: 'creator', headerName: 'Creator', width: BigRow },
+  { field: 'maker', headerName: 'Creator', width: BigRow },
 ];
 
 const Description = styled.div`
