@@ -100,6 +100,7 @@ const Notice = styled.div`
 `;
 
 const Index = () => {
+  const [isLoadingChart, setIsLoadingChart] = useState(false);
   const { provider } = useMetaMaskContext();
   const { isFlask, snapsDetected } = useMetaMask();
   const [resetSnapParams, { isLoading: isLoadingResetSnapParams }] =
@@ -121,7 +122,7 @@ const Index = () => {
     [params.whatToFarm],
   );
 
-  const { data: currentChain } = useQuery({
+  const { data: currentChain, isFetching } = useQuery({
     queryKey: [QueryKeys.MockApiCurrentChain],
     queryFn: async () => await ApiService.fetchCurrentPair(),
     refetchInterval: 20000,
@@ -192,6 +193,22 @@ const Index = () => {
     });
   }, [params.whatToFarm]);
 
+  const viewFrameChart = useCallback(() => {
+    if (isFetching && !currentChain) {
+      return <span>loading...</span>;
+    }
+    return (
+      <iframe
+        width="100%"
+        height="100%"
+        loading="eager"
+        id="wtf-embed-chart"
+        title="WhatToFarm Embed Chart"
+        src={`https://whattofarm.io/ru/chart-pairs-widget/${currentChain.selectedPair}`}
+      ></iframe>
+    );
+  }, [isFetching, currentChain]);
+
   const [isNoticeVisible, setNoticeVisible] = useState<boolean>(false); // Установить начальное значение в false
 
   const toggleNotice = (visible: boolean) => {
@@ -243,15 +260,7 @@ const Index = () => {
         </Wrapper>
         <WrapperChart>
           {/* todo: Chart Indicators*/}
-          <WrapperIframe>
-            <iframe
-              width="100%"
-              height="100%"
-              id="wtf-embed-chart"
-              title="WhatToFarm Embed Chart"
-              src="https://whattofarm.io/ru/chart-pairs-widget/0xDDed227D71A096c6B5D87807C1B5C456771aAA94"
-            ></iframe>
-          </WrapperIframe>
+          <WrapperIframe>{viewFrameChart()}</WrapperIframe>
           {/* todo: Chart Orders*/}
           <ChartOrders isPending={isPendingTableData} data={tableData} />
         </WrapperChart>
