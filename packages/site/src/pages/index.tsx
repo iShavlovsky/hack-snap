@@ -1,6 +1,6 @@
 import { LoadingButton } from '@mui/lab';
 import { useQuery } from '@tanstack/react-query';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { whatToFarm } from '../../../../mock/filterParamsData';
@@ -144,8 +144,6 @@ const Index = () => {
       }),
     refetchInterval: 30000,
   });
-
-  useEffect(() => console.log(tableData), [tableData]);
 
   const isMetaMaskReady = isLocalSnap(defaultSnapOrigin)
     ? isFlask

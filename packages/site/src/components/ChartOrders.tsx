@@ -67,7 +67,7 @@ const Description = styled.div`
 `;
 
 type ChartOrderProps = {
-  data?: TableDataResp | undefined;
+  data: TableDataResp | undefined;
   isPending?: boolean;
 };
 
