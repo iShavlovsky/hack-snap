@@ -12,12 +12,24 @@ export type Request = (params: RequestArguments) => Promise<unknown | null>;
  */
 type UseRequestReturnType = [
   Request,
-  { isLoading: boolean; error: Error | null },
+  {
+    isLoading: boolean;
+    error: Error | null;
+    isSuccess: boolean;
+    isError: boolean;
+  },
 ];
+
+enum AsyncState {
+  Idle = 'idle',
+  IsLoading = 'loading',
+  IsSuccess = 'success',
+  IsError = 'error',
+}
 
 export const useRequest = (): UseRequestReturnType => {
   const { provider, setError: setMetamaskError } = useMetaMaskContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingState, setLoadingState] = useState(AsyncState.Idle);
   const [error, setError] = useState<Error | null>(null);
   /**
    * `provider.request` wrapper.
@@ -28,7 +40,7 @@ export const useRequest = (): UseRequestReturnType => {
    * @returns The result of the request.
    */
   const request: Request = async ({ method, params }) => {
-    setIsLoading(true);
+    setLoadingState(AsyncState.IsLoading);
     try {
       const data =
         (await provider?.request({
@@ -36,16 +48,24 @@ export const useRequest = (): UseRequestReturnType => {
           params,
         } as RequestArguments)) ?? null;
 
-      setIsLoading(false);
+      setLoadingState(AsyncState.IsSuccess);
       error && setError(null);
       return data;
     } catch (requestError: any) {
       setMetamaskError(requestError);
-      setIsLoading(false);
+      setLoadingState(AsyncState.IsError);
       setError(requestError);
       return null;
     }
   };
 
-  return [request, { isLoading, error }];
+  return [
+    request,
+    {
+      isLoading: loadingState === AsyncState.IsLoading,
+      isSuccess: loadingState === AsyncState.IsSuccess,
+      isError: loadingState === AsyncState.IsError,
+      error,
+    },
+  ];
 };

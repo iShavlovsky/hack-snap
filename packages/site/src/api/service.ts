@@ -1,7 +1,9 @@
 import type { AxiosResponse } from 'axios';
+import axios from 'axios';
 import type { TableDataItem } from 'src/types';
 
 import type { PairResponseType } from '../../../../mock/mockApi';
+import type { MockApiPairType } from '../../../../types/requests';
 import http from './config';
 
 class ApiService {
@@ -35,6 +37,7 @@ class ApiService {
     slug: string;
     page: number;
     size: number;
+    inv: boolean;
   }) {
     try {
       const response = await http.get<
@@ -46,6 +49,31 @@ class ApiService {
         params,
       });
       return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async fetchCurrentPair() {
+    try {
+      const { data } = await axios.get<MockApiPairType[]>(
+        `https://669276ed346eeafcf46d0217.mockapi.io/chain-pair/get-chain-pair`,
+      );
+      return data[0];
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async changeCurrentPair(body: Pick<MockApiPairType, 'inv' | 'selectedPair'>) {
+    try {
+      const { data } = await axios.put(
+        `https://669276ed346eeafcf46d0217.mockapi.io/chain-pair/get-chain-pair/1`,
+        { ...body },
+      );
+      return data.data;
     } catch (error) {
       console.log(error);
       throw error;

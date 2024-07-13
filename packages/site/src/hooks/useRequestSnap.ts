@@ -1,4 +1,6 @@
+import { SnapRequestEnum } from '../../../../types/requests';
 import { defaultSnapOrigin } from '../config';
+import { useStateContext } from '../contexts/StateContext';
 import type { Snap } from '../types';
 import { useMetaMaskContext } from './MetamaskContext';
 import { useRequest } from './useRequest';
@@ -22,6 +24,7 @@ export const useRequestSnap = (
 ): UseRequestSnapReturnType => {
   const [request, { error, isLoading }] = useRequest();
   const { setInstalledSnap } = useMetaMaskContext();
+  const { params } = useStateContext();
   /**
    * Request the Snap.
    */
@@ -32,8 +35,21 @@ export const useRequestSnap = (
         [snapId]: version ? { version } : {},
       },
     })) as Record<string, Snap>;
-    console.log(snaps);
     setInstalledSnap(snaps?.[snapId] ?? null);
+    if (params.whatToFarm.length) {
+      await request({
+        method: 'wallet_invokeSnap',
+        params: {
+          snapId,
+          request: {
+            method: SnapRequestEnum.UpdateParams,
+            params: {
+              fields: params.whatToFarm,
+            },
+          },
+        },
+      });
+    }
     // Updates the `installedSnap` context variable since we just installed the Snap.
   };
 

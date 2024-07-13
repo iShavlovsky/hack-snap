@@ -4,38 +4,108 @@ import type {
   OnRpcRequestHandler,
   OnTransactionHandler,
 } from '@metamask/snaps-sdk';
-import { divider, heading, image, panel, row, text } from '@metamask/snaps-sdk';
+import {
+  address,
+  divider,
+  heading,
+  image,
+  panel,
+  row,
+  text,
+} from '@metamask/snaps-sdk';
 
 import { whatToFarm } from '../../../mock/filterParamsData';
 import type { PairResponseType } from '../../../mock/mockApi';
-import type { UpdateRequestParams } from '../../../types/requests';
-import { SnapRequestEnum } from '../../../types/requests';
+import type {
+  MockApiPairType,
+  UpdateRequestParams,
+} from '../../../types/requests';
+import { SnapRequestEnum, TokenPairType } from '../../../types/requests';
 import { extractValues } from '../../../utils/helper';
 
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
-  const tokenAddress = transaction.to;
+  let errorMessage = '';
+
+  const pairName = (await fetch(
+    `https://669276ed346eeafcf46d0217.mockapi.io/chain-pair/get-chain-pair`,
+  )
+    .then(async (response) => {
+      if (!response.ok) {
+        errorMessage = 'Network error';
+      }
+      return response.json();
+    })
+    .catch(() => {
+      errorMessage = 'Network error';
+    })) as MockApiPairType[];
+
+  const toAddress = transaction.to.toLowerCase();
   const amount = transaction.value;
 
-  const STG = '0x808d7c71ad2ba3FA531b068a2417C63106BC0949';
-  const WETH = '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f';
-  const BH = '0x1cc8C191f3362FC13B5DDF95e5FAfb27e1b145c6';
+  const STG = '0x808d7c71ad2ba3FA531b068a2417C63106BC0949'.toLowerCase();
+  const WETH = '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f'.toLowerCase();
+  const BH = '0x1cc8C191f3362FC13B5DDF95e5FAfb27e1b145c6'.toLowerCase();
 
-  let pair = '';
-  const inv = false;
+  let pair = pairName[0]?.selectedPair;
+  const inv = pairName[0]?.inv ?? false;
 
-  if (tokenAddress === STG || tokenAddress === WETH) {
-    const STGtoWETH = '0x72482cc775E9DD6245342f7042613a7036a0D2A0';
-    pair = STGtoWETH;
+  if (toAddress === BH && pair === TokenPairType.StgWeth) {
+    pair = TokenPairType.BhWeth;
+    (await fetch(
+      `https://669276ed346eeafcf46d0217.mockapi.io/chain-pair/get-chain-pair/1`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inv, selectedPair: TokenPairType.BhWeth }),
+      },
+    )
+      .then(async (response) => {
+        if (!response.ok) {
+          errorMessage = 'Network error 1';
+        }
+        return response.json();
+      })
+      .catch(() => (errorMessage = 'Network error 5'))) as MockApiPairType;
+  } else if (toAddress === STG && pair === TokenPairType.BhWeth) {
+    pair = TokenPairType.StgWeth;
+    (await fetch(
+      `https://669276ed346eeafcf46d0217.mockapi.io/chain-pair/get-chain-pair/1`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inv, selectedPair: TokenPairType.StgWeth }),
+      },
+    )
+      .then(async (response) => {
+        if (!response.ok) {
+          errorMessage = 'Network error 2';
+        }
+        return response.json();
+      })
+      .catch(() => (errorMessage = 'Network error 5'))) as MockApiPairType;
   }
 
-  if (tokenAddress === BH || tokenAddress === WETH) {
-    const BHtoWETH = '0xcc1c48ce14F70Fc0E4D3FCf193bAD75d21C7b009';
-    pair = BHtoWETH;
+  if (!pairName || toAddress === WETH) {
+    pair = TokenPairType.StgWeth;
+    (await fetch(
+      `https://669276ed346eeafcf46d0217.mockapi.io/chain-pair/get-chain-pair/1`,
+      {
+        method: 'PUT',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({ inv, selectedPair: TokenPairType.StgWeth }),
+      },
+    )
+      .then(async (response) => {
+        if (!response.ok) {
+          errorMessage = 'Network error 3';
+        }
+        return response.json();
+      })
+      .catch(() => (errorMessage = 'Network error 4'))) as MockApiPairType;
   }
 
-  let errorMessage = '';
   const pairData = (await fetch(
-    `https://whattofarm.io/api/v3/open/pair-stat/${pair}?inv=false&route=01`,
+    `https://whattofarm.io/api/v3/open/pair-stat/${pair}?inv=${inv}&route=01`,
   )
     .then(async (response) => {
       if (!response.ok) {
@@ -80,18 +150,22 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
         ? [text(`${errorMessage}`)]
         : [
             heading('Token Analytics'),
-            text(`tokenAddress: ${tokenAddress}`),
+            text(`toAddress ${toAddress}`),
             text(`amount: ${amount}`),
             divider(),
             ...values
               .map(({ label, value, fixedNumber }) => [
                 row(
                   `${label}`,
-                  text(
-                    `${
-                      fixedNumber ? truncateToFixed(value, fixedNumber) : value
-                    }`,
-                  ),
+                  label === 'Token info'
+                    ? address(value)
+                    : text(
+                        `${
+                          fixedNumber
+                            ? truncateToFixed(value, fixedNumber)
+                            : value
+                        }`,
+                      ),
                 ),
               ])
               .flat(),
@@ -117,6 +191,24 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         params: {
           operation: 'clear',
           encrypted: false,
+        },
+      });
+    case SnapRequestEnum.SendParamsSuccess:
+      return await snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: 'alert',
+          content: panel([
+            image(
+              '<svg width="230" height="102" viewBox="0 0 230 102" fill="none" xmlns="http://www.w3.org/2000/svg">\n' +
+                '<circle cx="115" cy="51" r="25" fill="#25AE88"/>\n' +
+                '<polyline points="128,41 112,59 102,51" fill="none" stroke="#FFFFFF"\n' +
+                'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"/>\n' +
+                '</svg>',
+            ),
+            heading('Success update params'),
+            text('Your settings for snap Degen Watch have been updated'),
+          ]),
         },
       });
     default:

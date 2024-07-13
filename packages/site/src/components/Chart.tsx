@@ -39,10 +39,6 @@ function tradingViewWidget() {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(container.current);
-  }, [container]);
-
   return (
     <WrapperChart>
       <div
