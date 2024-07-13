@@ -131,13 +131,6 @@ const Index = () => {
     }
   }, [isSuccessUpdateParams, provider]);
 
-  // const { mutate } = useMutation({
-  //   mutationFn: async (
-  //     changeParams: Pick<MockApiPairType, 'inv' | 'selectedPair'>,
-  //   ) => await ApiService.changeCurrentPair(changeParams),
-  //   mutationKey: [QueryKeys.MockApiCurrentChain],
-  // });
-
   const { data: pairFilterData, isPending: isPendingPairFilterData } = useQuery(
     {
       queryKey: [QueryKeys.LiquidPair, currentChain],
@@ -194,16 +187,6 @@ const Index = () => {
   return (
     <Container>
       <ContainerRow>
-        {/* <Button
-          onClick={() =>
-            mutate({
-              inv: true,
-              selectedPair: '0xf6d6d8AD2611832288FD0A0A0B77a81C7715aD0E',
-            })
-          }
-        >
-          change
-        </Button> */}
         <Wrapper>
           <AnalyticsForm
             content={{
