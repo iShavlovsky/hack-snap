@@ -1,7 +1,7 @@
 import type { GridColDef } from '@mui/x-data-grid';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { DataGrid } from '@mui/x-data-grid';
-import * as React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 type Row = {
@@ -57,106 +57,75 @@ const columns: GridColDef[] = [
   { field: 'creator', headerName: 'Creator', width: BigRow },
 ];
 
-const rows: Row[] = [
-  {
-    id: 1,
-    date: '2024.07.09',
-    time: '9:34:35 AM',
-    type: 'sell',
-    totalUSD: 207663.59,
-    priceUSD: 57684.33,
-    totalWETH: 67.07,
-    priceWETH: 18.63,
-    totalWBTC: 3.6,
-    creator: '0x804...9',
-  },
-  {
-    id: 2,
-    date: '2024.07.09',
-    time: '9:34:35 AM',
-    type: 'sell',
-    totalUSD: 131949.95,
-    priceUSD: 57753.62,
-    totalWETH: 42.58,
-    priceWETH: 18.64,
-    totalWBTC: 2.28,
-    creator: '0xf1b...a1b',
-  },
-  {
-    id: 3,
-    date: '2024.07.09',
-    time: '9:34:35 AM',
-    type: 'sell',
-    totalUSD: 5011.17,
-    priceUSD: 57732.33,
-    totalWETH: 1.62,
-    priceWETH: 18.63,
-    totalWBTC: 0.09,
-    creator: '0x3C4...6',
-  },
-  {
-    id: 4,
-    date: '2024.07.09',
-    time: '9:34:47 AM',
-    type: 'sell',
-    totalUSD: 184781.69,
-    priceUSD: 57744.28,
-    totalWETH: 59.65,
-    priceWETH: 18.63,
-    totalWBTC: 3.28,
-    creator: '0x804...9',
-  },
-];
+const ChartOrders: React.FC = () => {
+  const [rows, setRows] = useState<Row[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-/**
- *
- */
+  useEffect(() => {
+    axios
+      .get('/api/your-endpoint')
+      .then((response) => {
+        const data = response.data.list.map((item: any, index: number) => ({
+          id: index + 1, // Пример, генерация id
+          date: new Date(item.ts).toLocaleDateString(),
+          time: new Date(item.ts).toLocaleTimeString(),
+          type: item.side,
+          totalUSD: item.amountUSD,
+          priceUSD: item.priceUSD0,
+          totalWETH: item.amount0,
+          priceWETH: item.price0,
+          totalWBTC: item.amount1,
+          creator: item.maker,
+        }));
+        setRows(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setError('Failed to fetch data. Please try again later.');
+      });
+  }, []);
 
-/**
- *
- */
-
-/**
- *
- */
-export default function chartOrders() {
   return (
     <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        sx={{
-          '& .MuiDataGrid-columnHeaderCheckbox, .MuiDataGrid-cellCheckbox': {
-            display: 'none', // Размер шрифта ячеек данных
-          },
-          '& .MuiSvgIcon-root': {
-            fontSize: '2rem', // Размер шрифта ячеек данных
-          },
-
-          '& .MuiButtonBase-root': {
-            padding: '1rem', // Размер шрифта ячеек данных
-          },
-
-          '& .MuiDataGrid-cell': {
-            fontSize: '1.7rem', // Размер шрифта ячеек данных
-          },
-          '& .MuiSelect-select': {
-            fontSize: '1.7rem',
-            lineHeight: '160%', // Размер шрифта ячеек данных
-          },
-          '& .MuiTablePagination-actions': {
-            display: 'flex',
-            gap: '.5rem', // Размер шрифта ячеек данных
-          },
-        }}
-      />
+      {error ? (
+        <div>{error}</div>
+      ) : (
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+          sx={{
+            '& .MuiDataGrid-columnHeaderCheckbox, .MuiDataGrid-cellCheckbox': {
+              display: 'none',
+            },
+            '& .MuiSvgIcon-root': {
+              fontSize: '2rem',
+            },
+            '& .MuiButtonBase-root': {
+              padding: '1rem',
+            },
+            '& .MuiDataGrid-cell': {
+              fontSize: '1.7rem',
+            },
+            '& .MuiSelect-select': {
+              fontSize: '1.7rem',
+              lineHeight: '160%',
+            },
+            '& .MuiTablePagination-actions': {
+              display: 'flex',
+              gap: '.5rem',
+            },
+          }}
+        />
+      )}
     </div>
   );
-}
+};
+
+export default ChartOrders;

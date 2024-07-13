@@ -233,7 +233,7 @@ const Index = () => {
           {/*  }}*/}
           {/* />*/}
           {/* todo: Chart Orders*/}
-          <ChartOrders />
+          <ChartOrders rows={tableData || []} />
         </WrapperChart>
 
         <CardContainer>
