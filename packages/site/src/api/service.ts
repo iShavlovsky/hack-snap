@@ -1,4 +1,5 @@
 import type { AxiosResponse } from 'axios';
+import type { TableDataItem } from 'src/types';
 
 import type { PairResponseType } from '../../../../mock/mockApi';
 import http from './config';
@@ -27,9 +28,23 @@ class ApiService {
     }
   }
 
-  async fetchTableData() {
+  async fetchTableData({
+    slug,
+    ...params
+  }: {
+    slug: string;
+    page: number;
+    size: number;
+  }) {
     try {
-      const response = await http.get('chart/pair/history');
+      const response = await http.get<
+        AxiosResponse<{
+          list: TableDataItem[];
+          page: { page: number; size: number; total: number };
+        }>
+      >(`pair-order-book/${slug}`, {
+        params,
+      });
       return response.data;
     } catch (error) {
       console.log(error);
