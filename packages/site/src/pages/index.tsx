@@ -172,6 +172,7 @@ const Index = () => {
   const toggleNotice = (visible: boolean) => {
     setNoticeVisible(visible);
   };
+  console.log('344', tableData!.list!);
 
   return (
     <Container>
@@ -233,7 +234,10 @@ const Index = () => {
           {/*  }}*/}
           {/* />*/}
           {/* todo: Chart Orders*/}
-          <ChartOrders />
+          <ChartOrders
+            isPending={isPendingPairFilterData}
+            content={tableData!.list!}
+          />
         </WrapperChart>
 
         <CardContainer>

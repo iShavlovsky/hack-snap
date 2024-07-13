@@ -2,7 +2,10 @@ import type { GridColDef } from '@mui/x-data-grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
+import type { ReactNode } from 'react';
 import styled from 'styled-components';
+
+import type { TableDataItem } from '../types';
 
 type Row = {
   id: number;
@@ -119,44 +122,62 @@ const rows: Row[] = [
 /**
  *
  */
-export default function chartOrders() {
+const Description = styled.div`
+  margin-top: 1rem;
+`;
+
+type chartOrderprops = {
+  content: TableDataItem[];
+  isPending?: boolean;
+};
+
+/**
+ *
+ * @param options0
+ * @param options0.content
+ * @param options0.isPending
+ */
+export default function chartOrders({ content, isPending }: chartOrderprops) {
+  console.log('333', content);
   return (
     <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        sx={{
-          '& .MuiDataGrid-columnHeaderCheckbox, .MuiDataGrid-cellCheckbox': {
-            display: 'none', // Размер шрифта ячеек данных
-          },
-          '& .MuiSvgIcon-root': {
-            fontSize: '2rem', // Размер шрифта ячеек данных
-          },
-
-          '& .MuiButtonBase-root': {
-            padding: '1rem', // Размер шрифта ячеек данных
-          },
-
-          '& .MuiDataGrid-cell': {
-            fontSize: '1.7rem', // Размер шрифта ячеек данных
-          },
-          '& .MuiSelect-select': {
-            fontSize: '1.7rem',
-            lineHeight: '160%', // Размер шрифта ячеек данных
-          },
-          '& .MuiTablePagination-actions': {
-            display: 'flex',
-            gap: '.5rem', // Размер шрифта ячеек данных
-          },
-        }}
-      />
+      {isPending && content ? (
+        <Description>Loading...</Description>
+      ) : (
+        <DataGrid
+          rows={content}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+          sx={{
+            '& .MuiDataGrid-columnHeaderCheckbox, .MuiDataGrid-cellCheckbox': {
+              display: 'none', // Размер шрифта ячеек данных
+            },
+            '& .MuiSvgIcon-root': {
+              fontSize: '2rem', // Размер шрифта ячеек данных
+            },
+            '& .MuiButtonBase-root': {
+              padding: '1rem', // Размер шрифта ячеек данных
+            },
+            '& .MuiDataGrid-cell': {
+              fontSize: '1.7rem', // Размер шрифта ячеек данных
+            },
+            '& .MuiSelect-select': {
+              fontSize: '1.7rem',
+              lineHeight: '160%', // Размер шрифта ячеек данных
+            },
+            '& .MuiTablePagination-actions': {
+              display: 'flex',
+              gap: '.5rem', // Размер шрифта ячеек данных
+            },
+          }}
+        />
+      )}
     </div>
   );
 }
